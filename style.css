@@ -91,19 +91,19 @@ nav ul li a.active {
 
 @keyframes heroSlider {
   0% {
-    background-image: url('/images/b-2.jpg');
+    background-image: url('images/b-2.jpg');
   }
   25% {
-    background-image: url('/images/o1.jpg');
+    background-image: url('images/o1.jpg');
   }
   50% {
-    background-image: url('/images/o3.jpg');
+    background-image: url('images/o3.jpg');
   }
   75% {
-    background-image: url('/images/b-4.jpg');
+    background-image: url('images/b-4.jpg');
   }
   100% {
-    background-image: url('/images/b-5.jpg');
+    background-image: url('images/b-5.jpg');
   }
 }
 
