@@ -1,0 +1,658 @@
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>The Trishul Vista</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      header {
+        background-color: #2c3e50;
+        padding: 15px 20px;
+        position: relative;
+      }
+
+      header > div {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      header img {
+        max-width: 100px;
+        margin-right: 10px;
+      }
+
+      header h1 {
+        font-size: 1.8rem !important;
+      }
+
+      header p {
+        font-size: 0.75rem !important;
+      }
+
+      .hamburger {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 1000;
+      }
+
+      nav ul {
+        display: flex;
+        list-style: none;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      nav ul li {
+        display: inline;
+      }
+
+      nav ul li a {
+        color: white;
+        text-decoration: none;
+        font-size: 0.9rem;
+        padding: 8px 12px;
+        border-radius: 4px;
+        transition: 0.3s;
+      }
+
+      nav ul li a:hover,
+      nav ul li a.active {
+        background-color: #8b4513;
+      }
+
+      /* Mobile Responsiveness */
+      @media (max-width: 768px) {
+        .hamburger {
+          display: block !important;
+        }
+
+        nav {
+          display: none;
+          position: absolute;
+          top: 60px;
+          right: 0;
+          background-color: #2c3e50;
+          width: 100%;
+          padding: 20px;
+          z-index: 999;
+        }
+
+        nav.show {
+          display: block !important;
+        }
+
+        nav ul {
+          flex-direction: column;
+          gap: 10px;
+        }
+
+        nav ul li {
+          display: block;
+          width: 100%;
+        }
+
+        nav ul li a {
+          display: block;
+          padding: 12px 15px;
+          width: 100%;
+        }
+
+        header div {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+        }
+
+        header h1 {
+          font-size: 1.5rem !important;
+        }
+
+        header p {
+          font-size: 0.7rem !important;
+        }
+
+        header img {
+          max-width: 60px;
+          margin-right: 10px;
+        }
+      }
+
+      @media (max-width: 600px) {
+        header {
+          padding: 10px 15px;
+        }
+
+        header img {
+          max-width: 50px;
+        }
+
+        header h1 {
+          font-size: 1.2rem !important;
+        }
+
+        header p {
+          font-size: 0.65rem !important;
+        }
+
+        .hero h2 {
+          font-size: 1.5rem !important;
+        }
+
+        .hero p {
+          font-size: 0.9rem !important;
+        }
+
+        section {
+          padding: 30px 15px !important;
+        }
+
+        h2 {
+          font-size: 1.8rem !important;
+        }
+
+        p {
+          font-size: 0.9rem !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body style="background-color: #ffffff; margin: 0; padding: 0;">
+
+   <header>
+  <div style="display: flex; align-items: center; justify-content: space-between;">
+    <div style="display: flex; align-items: center;">
+      <img src="images/logo.png" alt="The Trishul Vista Logo" style="max-width: 150px; height: auto; margin-right: 15px;" />
+      <div>
+        <h1 style="margin: 0; padding: 0; font-size: 2.5rem; font-weight: bold; color: #ffffff; letter-spacing: 1px; font-family: 'Georgia', serif; text-shadow: 2px 2px 4px rgba(0,0,0,0.2); line-height: 1;">The Trishul Vista</h1>
+        <p style="margin: 4px 0 0 0; padding: 0; font-size: 1rem; color: #e8d4b8; font-family: 'Georgia', serif; font-style: italic; letter-spacing: 0.5px; line-height: 1;">Serenity Amongst Mountain's</p>
+      </div>
+    </div>
+    
+    <div class="hamburger" onclick="toggleMenu()">
+      <i class="fas fa-bars"></i>
+    </div>
+    <nav id="mainNav">
+      
+      <ul>
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="rooms.html">Rooms</a></li>
+        <li><a href="booking.html">Booking</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="register.html" id="registerLink">Register</a></li>
+        <li><a href="login.html" id="loginLink">Login</a></li>
+        <li id="userGreeting" style="display: none;"></li>
+        <li><a href="#" id="logoutLink" style="display: none;" onclick="logout()">Logout</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+  <section class="hero">
+  <h2>Welcome to Luxury & Comfort</h2>
+  <p>Book your perfect stay with us</p>
+  <a href="booking.html" class="btn">Book Now</a>
+ 
+</section>
+
+
+    
+ <section style="background-color: #ffffff; padding: 60px 20px; margin: 40px 0;">
+  <div style="max-width: 1200px; margin: 0 auto; display: flex; align-items: center; gap: 40px; flex-wrap: wrap;">
+    <div style="flex: 1; min-width: 300px;">
+      <div style="position: relative; width: 100%; border-radius: 10px; overflow: hidden;">
+        <div class="slider-container" style="position: relative; width: 100%; height: 400px; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+          <div class="slider" style="display: flex; width: 100%; height: 100%; transition: transform 0.8s ease-in-out;">
+            <img src="images/3.jpg" alt="The Trishul Vista - View 1" style="width: 100%; height: 100%; object-fit: cover; flex-shrink: 0;" />
+            <img src="Rooms/1-1.jpg" alt="The Trishul Vista - View 2" style="width: 100%; height: 100%; object-fit: cover; flex-shrink: 0;" />
+            <img src="Rooms/2-3.jpg" alt="The Trishul Vista - View 3" style="width: 100%; height: 100%; object-fit: cover; flex-shrink: 0;" />
+            <img src="images/1.jpg" alt="The Trishul Vista - View 4" style="width: 100%; height: 100%; object-fit: cover; flex-shrink: 0;" />
+          </div>
+
+          <!-- Slider Controls -->
+          <div style="position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10;">
+            <span class="dot" onclick="currentSlide(0)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.8); cursor: pointer; transition: 0.3s; border: 2px solid white;"></span>
+            <span class="dot" onclick="currentSlide(1)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; border: 2px solid white;"></span>
+            <span class="dot" onclick="currentSlide(2)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; border: 2px solid white;"></span>
+            <span class="dot" onclick="currentSlide(3)" style="width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.5); cursor: pointer; transition: 0.3s; border: 2px solid white;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="flex: 1; min-width: 300px;">
+      <h2 style="font-size: 2.5rem; color: #180c03; font-family: 'Georgia', serif; margin-bottom: 20px; font-weight: bold; letter-spacing: 0.5px;">The Trishul Vista</h2>
+      <p style="font-size: 1.1rem; color: #555; line-height: 1.8; margin-bottom: 20px;">Wake up to breathtaking views of the Trishul mountain range, unwind in our cozy and elegant rooms, and experience warm hospitality that makes you feel at home.</p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 25px;">
+        <div style="padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <p style="margin: 0; font-size: 0.9rem; color: #180c03; font-weight: bold;"><i class="fas fa-mountain" style="margin-right: 10px;"></i>Mountain Views</p>
+        </div>
+        <div style="padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <p style="margin: 0; font-size: 0.9rem; color: #180c03; font-weight: bold;"><i class="fas fa-home" style="margin-right: 10px;"></i>Cozy Rooms</p>
+        </div>
+        <div style="padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <p style="margin: 0; font-size: 0.9rem; color: #180c03; font-weight: bold;"><i class="fas fa-heart" style="margin-right: 10px;"></i>Warm Welcome</p>
+        </div>
+        <div style="padding: 15px; background: white; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+          <p style="margin: 0; font-size: 0.9rem; color: #180c03; font-weight: bold;"><i class="fas fa-spa" style="margin-right: 10px;"></i>Luxury Stay</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+    <section style="padding: 30px 20px; background-color: #ffffff;">
+      <div style="text-align: center; margin-bottom: 25px;">
+        <h2 style="font-size: 2.5rem; color: #0f0701; font-family: 'Georgia', serif; margin-bottom: 15px; font-weight: bold;">Our Resorts</h2>
+        <p style="font-size: 1.1rem; color: #555; line-height: 1.6;"> luxurious rooms, each designed to provide you with the ultimate comfort and hospitality experience.</p>
+      </div>
+
+    <section class="rooms">
+      <div class="room-card" >
+        <img src="Rooms/1-1.jpg" alt="Luxury Suite" onclick="openImageLightbox('Rooms/1-1.jpg', 'Luxury Suite')" style="cursor: pointer;" />
+        <h3>Luxury Suite</h3>
+        <p>King Bed</p>
+      </div>
+     <div class="room-card" >
+        <img src="images/o3.jpg" alt="Out side" onclick="openImageLightbox('images/o3.jpg', 'Out side')" style="cursor: pointer;" />
+        <h3>Out side</h3>
+        <p>Beautiful View Outside </p>
+      </div>
+       <div class="room-card" >
+        <img src="images/b-2.jpg" alt="Dining Area" onclick="openImageLightbox('images/b-2.jpg', 'Dining Area')" style="cursor: pointer;" />
+        <h3>Dining Area</h3>
+        <p>Big Dining Area </p>
+      </div>
+      <div class="room-card" >
+        <img src="images/2.jpg" alt="Himalaya View" onclick="openImageLightbox('images/2.jpg', 'Himalaya View')" style="cursor: pointer;" />
+        <h3>Himalaya View</h3>
+        <p>Beautiful View of Himalayas </p>
+      </div>
+    </section>
+
+    <!-- Image Lightbox Modal -->
+    <div id="imageLightbox" class="lightbox" onclick="closeImageLightbox(event)" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center;">
+      <div style="position: relative; max-width: 90%; max-height: 90%;">
+        <img id="lightboxImage" src="" alt="Full Screen Image" style="width: 100%; height: auto; border-radius: 5px;">
+        <span class="close-lightbox" onclick="closeImageLightbox()" style="position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; background-color: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 5px;"> &times;</span>
+      </div>
+    </div>
+
+  <!-- Signature Dining Section -->
+<section class="dining-section">
+  <div class="dining-header">
+    <h2>Signature Dining</h2>
+    <p>Experience master chefs.</p>
+  </div>
+
+  <div class="carousel-wrapper">
+    <div class="carousel">
+      <!-- Original Set -->
+      <div class="dining-card">
+        <img src="food/dining1.png" alt="Royal Feast" />
+        <h3>The Royal Feast</h3>
+        <p>Luxury Indian thali served in a royal ambience.</p>
+      </div>
+      <div class="dining-card">
+        <img src="food/dining2.png" alt="Sea Breeze Lounge" />
+        <h3>Sea Breeze Lounge</h3>
+        <p>Enjoy cocktails and seafood with a sea view.</p>
+      </div>
+      <div class="dining-card">
+        <img src="food/dining3.png" alt="Candlelight Courtyard" />
+        <h3>Candlelight Courtyard</h3>
+        <p>Romantic dinners under the stars in a private setting.</p>
+      </div>
+
+      <!-- Duplicate Set for seamless loop -->
+      <div class="dining-card">
+        <img src="food/dining1.png" alt="Royal Feast" />
+        <h3>The Royal Feast</h3>
+        <p>Luxury Indian thali served in a royal ambience.</p>
+      </div>
+      <div class="dining-card">
+        <img src="food/dining2.png" alt="Sea Breeze Lounge" />
+        <h3>Sea Breeze Lounge</h3>
+        <p>Enjoy cocktails and seafood with a sea view.</p>
+      </div>
+      <div class="dining-card">
+        <img src="food/dining3.png" alt="Candlelight Courtyard" />
+        <h3>Candlelight Courtyard</h3>
+        <p>Romantic dinners under the stars in a private setting.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+  <!-- Reviews & Ratings Section -->
+  <section style="padding: 60px 20px; background-color: #f9f9f9;">
+    <div style="max-width: 1200px; margin: 0 auto;">
+      <div style="text-align: center; margin-bottom: 50px;">
+        <h2 style="font-size: 2.5rem; color: #111010; font-family: 'Georgia', serif; margin-bottom: 15px;">Guest Reviews & Ratings</h2>
+        <p style="font-size: 1.1rem; color: #0c0c0c;">Hear from our satisfied guests about their memorable stay</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px;">
+        <!-- Review 1 -->
+        <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="width: 50px; height: 50px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #8b4513; font-size: 24px;">👤</div>
+            <div>
+              <h4 style="margin: 0; color: #1c1b1a;">Rajesh Kumar</h4>
+              <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Business Traveler</p>
+            </div>
+          </div>
+          <div style="color: #ffb800; font-size: 18px; margin-bottom: 10px;">★★★★★</div>
+          <p style="color: #555; line-height: 1.6; margin: 0;">"Exceptional hospitality and stunning mountain views. The staff was incredibly warm and welcoming. Will definitely return!"</p>
+        </div>
+
+        <!-- Review 2 -->
+        <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="width: 50px; height: 50px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #8b4513; font-size: 24px;">👤</div>
+            <div>
+              <h4 style="margin: 0; color: #1e1d1c;">Priya Sharma</h4>
+              <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Honeymoon Couple</p>
+            </div>
+          </div>
+          <div style="color: #ffb800; font-size: 18px; margin-bottom: 10px;">★★★★★</div>
+          <p style="color: #555; line-height: 1.6; margin: 0;">"A perfect romantic getaway! The rooms are cozy and elegant. Loved every moment here. Highly recommended!"</p>
+        </div>
+
+        <!-- Review 3 -->
+        <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <div style="display: flex; align-items: center; margin-bottom: 15px;">
+            <div style="width: 50px; height: 50px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px; color: #8b4513; font-size: 24px;">👤</div>
+            <div>
+              <h4 style="margin: 0; color: #111110;">Amit Patel</h4>
+              <p style="margin: 5px 0 0 0; color: #666; font-size: 0.9rem;">Family Vacation</p>
+            </div>
+          </div>
+          <div style="color: #ffb800; font-size: 18px; margin-bottom: 10px;">★★★★☆</div>
+          <p style="color: #555; line-height: 1.6; margin: 0;">"Great location and beautiful surroundings. The staff was helpful and friendly. Food was delicious too!"</p>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 40px;">
+        <p style="font-size: 1rem; color: #121111; font-weight: bold;">⭐ 4.8/5 Stars | 500+ Happy Guest Reviews</p>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    function openMenu(title, desc, img) {
+      document.getElementById('menuTitle').innerText = title;
+      document.getElementById('menuDesc').innerText = desc;
+      document.getElementById('menuImage').src = 'images/' + img;
+      document.getElementById('menuPopup').style.display = 'flex';
+    }
+
+    function closeMenu(event) {
+      if (
+        event.target.classList.contains('popup-overlay') ||
+        event.target.classList.contains('close-btn')
+      ) {
+        document.getElementById('menuPopup').style.display = 'none';
+      }
+    }
+  </script>
+</section>
+  
+
+  <!-- Dining Popup Modal -->
+  <div id="menuPopup" class="popup-overlay" onclick="closeMenu(event)">
+    <div class="popup-box">
+      <span class="close-btn" onclick="closeMenu(event)">&times;</span>
+      <img id="menuImage" src="" alt="Dining Menu Image" />
+      <h3 id="menuTitle"></h3>
+      <p id="menuDesc"></p>
+    </div>
+  </div>
+
+
+    <div class="info-sections">
+      <div class="info-box">
+        <h2><i class="fa-solid fa-hotel"></i> Popular Facilities</h2>
+        <p><i class="fa-solid fa-broom"></i> Daily Housekeeping </p>
+        <p><i class="fa-solid fa-bath"></i> Attached Bathroom</p>
+        <p><i class="fa-solid fa-utensils"></i> Dining Area</p>
+        <p><i class="fa-solid fa-wifi"></i> Free Wi-Fi</p>
+      </div>
+      <div class="info-box">
+        <h2><i class="fa-solid fa-clipboard-list"></i> Policies</h2>
+        <h3>Check-In / Check-Out</h3>
+        <p>Check-In: 12:00 PM</p>
+        <p>Check-Out: 11:00 AM</p>
+        <h3>ID Proof Required</h3>
+        <p>Aadhar, Driving License, Passport</p>
+      </div>
+    </div>
+
+    <!-- Location Map Section -->
+    <section style="padding: 40px 20px; background-color: #f9f9f9;">
+      <div style="max-width: 1200px; margin: 0 auto;">
+        <h2 style="font-size: 2.2rem; color: #100f0f; text-align: center; margin-bottom: 30px; font-family: 'Georgia', serif;">Find Us on Map</h2>
+        <div style="width: 100%; height: 400px; border-radius: 10px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3471.83740599132!2d79.61801567575102!3d29.52109817519128!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39a0bbee453a68af%3A0x9171ce7f5a76340e!2sThe%20Trishul%20Vista!5e0!3m2!1sen!2sin!4v1762600734957!5m2!1sen!2sin" width="100%" height="100%" style="border: none;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div style="text-align: center; margin-top: 20px;">
+          <a href="https://maps.app.goo.gl/bY4UnbxLWdHdKfiCA" target="_blank" style="display: inline-block; background-color: #121110; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s;" onmouseover="this.style.backgroundColor='#6b3410'" onmouseout="this.style.backgroundColor='#8b4513'">Get Directions →</a>
+        </div>
+      </div>
+    </section>
+
+    <div style="text-align: center; margin-top: 40px; padding: 40px 20px; background-color: #ffffff;">
+      <h2 style="font-size: 2rem; color: #1c1a18; margin-bottom: 25px;"><i class="fa-solid fa-phone"></i> Contact Us</h2>
+      <p style="font-size: 1rem; margin: 10px 0;"><i class="fa-solid fa-location-dot"></i> Vill. & Post - Peora, Distt.- Nainital, Uttarakhand 263138</p>
+      <p style="font-size: 1rem; margin: 10px 0;"><i class="fa-solid fa-envelope"></i> thetrishulvista@gmail.com</p>
+      <p style="font-size: 1rem; margin: 10px 0;"><i class="fa-solid fa-phone"></i> +91-7055522887, +91-7535861111</p>
+      
+      <div style="margin-top: 30px; display: flex; justify-content: center; gap: 25px;">
+        <a href="https://www.youtube.com/@thetrishulvista" target="_blank" style="text-decoration: none; color: #ff0000; font-size: 28px; transition: 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="YouTube">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://www.facebook.com/thetrishulvista/?rdid=QPI4nFDR3xsBPrRU" target="_blank" style="text-decoration: none; color: #1877f2; font-size: 28px; transition: 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+        <a href="https://www.instagram.com/thetrishulvista?igsh=MThhc3YycWx4M2Zsbw%3D%3D" target="_blank" style="text-decoration: none; color: #e4405f; font-size: 28px; transition: 0.3s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" title="Instagram">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </div>
+    </div>
+
+    <footer>
+      <p>© 2025 The Trishul Vista | All rights reserved.</p>
+    </footer>
+
+    <!-- Room Detail Popup -->
+    <div id="roomDetailPopup" class="popup-overlay" onclick="closeRoomDetails(event)">
+      <div class="popup-box popup-room-box">
+        <span class="close-btn" onclick="closeRoomDetails(event)">&times;</span>
+        <div class="room-popup-content">
+          <div class="room-popup-image">
+            <img id="popupImage" src="" alt="Room Image" />
+            <div class="room-price-badge" id="popupPrice"></div>
+          </div>
+          <div class="room-popup-details">
+            <h2 id="popupTitle"></h2>
+            <p id="popupDesc"></p>
+            <div class="room-amenities" id="amenitiesSection">
+              <h4><i class="fas fa-check-circle"></i> Room Amenities</h4>
+              <ul id="amenitiesList">
+                <li><i class="fas fa-wifi"></i> High-Speed WiFi</li>
+                <li><i class="fas fa-snowflake"></i> Air Conditioning</li>
+                <li><i class="fas fa-utensils"></i> Room Service</li>
+                <li><i class="fas fa-bathtub"></i> Attached Bathroom</li>
+                <li><i class="fas fa-coffee"></i> Complimentary Breakfast</li>
+              </ul>
+            </div>
+            <button class="room-popup-btn" onclick="goToBooking()"><i class="fas fa-calendar-check"></i> Book  Room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function showRoomDetails(img, title, price, desc) {
+        document.getElementById('popupImage').src = 'images/' + img;
+        document.getElementById('popupTitle').innerText = title;
+        document.getElementById('popupPrice').innerText = price;
+        document.getElementById('popupDesc').innerText = desc;
+
+        // Set amenities based on room type
+        const amenitiesList = document.getElementById('amenitiesList');
+        if (title === 'Simple Room') {
+          amenitiesList.innerHTML = `
+            <li><i class="fas fa-wifi"></i> High-Speed WiFi</li>
+            <li><i class="fas fa-bathtub"></i> Private Bathroom</li>
+            <li><i class="fas fa-bed"></i> Comfortable Bed</li>
+            <li><i class="fas fa-phone"></i> 24/7 Front Desk</li>
+          `;
+        } else if (title === 'Deluxe Room') {
+          amenitiesList.innerHTML = `
+            <li><i class="fas fa-wifi"></i> High-Speed WiFi</li>
+            <li><i class="fas fa-snowflake"></i> Air Conditioning</li>
+            <li><i class="fas fa-utensils"></i> Room Service</li>
+            <li><i class="fas fa-bathtub"></i> Attached Bathroom</li>
+          `;
+        } else if (title === 'Luxury Suite') {
+          amenitiesList.innerHTML = `
+            <li><i class="fas fa-crown"></i> Premium Bedding</li>
+            <li><i class="fas fa-bathtub"></i> Luxurious Bathroom</li>
+            <li><i class="fas fa-utensils"></i> Room Service</li>
+            <li><i class="fas fa-wifi"></i> High-Speed WiFi</li>
+          `;
+        }
+
+        document.getElementById('roomDetailPopup').style.display = 'flex';
+      }
+
+      function closeRoomDetails(event) {
+        if (
+          event.target.classList.contains('popup-overlay') ||
+          event.target.classList.contains('close-btn')
+        ) {
+          document.getElementById('roomDetailPopup').style.display = 'none';
+        }
+      }
+
+      function goToBooking() {
+        document.getElementById('roomDetailPopup').style.display = 'none';
+        window.location.href = 'booking.html';
+      }
+    </script>
+<script>
+  // Slider functionality
+  let currentSlideIndex = 0;
+  let sliderInterval;
+
+  function showSlide(n) {
+    const slider = document.querySelector('.slider');
+    const dots = document.querySelectorAll('.dot');
+    
+    if (n >= 4) currentSlideIndex = 0;
+    if (n < 0) currentSlideIndex = 3;
+    
+    slider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+    
+    dots.forEach((dot, index) => {
+      if (index === currentSlideIndex) {
+        dot.style.background = 'rgba(255,255,255,0.8)';
+      } else {
+        dot.style.background = 'rgba(255,255,255,0.5)';
+      }
+    });
+  }
+
+  function changeSlide(n) {
+    clearInterval(sliderInterval);
+    currentSlideIndex += n;
+    showSlide(currentSlideIndex);
+    startAutoSlide();
+  }
+
+  function currentSlide(n) {
+    clearInterval(sliderInterval);
+    currentSlideIndex = n;
+    showSlide(currentSlideIndex);
+    startAutoSlide();
+  }
+
+  function startAutoSlide() {
+    sliderInterval = setInterval(() => {
+      currentSlideIndex++;
+      showSlide(currentSlideIndex);
+    }, 4000);
+  }
+
+  // Start slider on page load
+  document.addEventListener('DOMContentLoaded', () => {
+    showSlide(0);
+    startAutoSlide();
+    
+    // User greeting script
+    const userGreeting = document.getElementById("userGreeting");
+    const logoutLink = document.getElementById("logoutLink");
+    const loginLink = document.getElementById("loginLink");
+    const registerLink = document.getElementById("registerLink");
+
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+    if (loggedInUser) {
+      userGreeting.style.display = "inline";
+      logoutLink.style.display = "inline";
+      userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
+
+      // Hide login/register
+      if (loginLink) loginLink.style.display = "none";
+      if (registerLink) registerLink.style.display = "none";
+    }
+  });
+
+  function logout() {
+    localStorage.removeItem("loggedInUser");
+    window.location.href = "index.html";
+  }
+
+  // Lightbox functions for full-screen image view
+  function openImageLightbox(imageSrc, imageAlt) {
+    const lightbox = document.getElementById('imageLightbox');
+    const img = document.getElementById('lightboxImage');
+    img.src = imageSrc;
+    img.alt = imageAlt;
+    lightbox.style.display = 'flex';
+  }
+
+  function closeImageLightbox(event) {
+    const lightbox = document.getElementById('imageLightbox');
+    if (event && event.target !== lightbox) return;
+    lightbox.style.display = 'none';
+  }
+
+  function toggleMenu() {
+    const nav = document.querySelector("nav");
+    nav.classList.toggle("show");
+  }
+</script>
+
+
+
+  </body>
+  </html>
