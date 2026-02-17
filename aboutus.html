@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+      
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html" class="active">About Us</a></li>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="register.html" id="registerLink">Register</a></li>
+          <li><a href="login.html" id="loginLink">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <h2>About The Trishul Vista</h2>
+    <p>Discover Our Story of Elegance & Hospitality</p>
+  </section>
+
+  <!-- Our Story Section -->
+  <section class="section-white">
+    <div class="container-max">
+      <div class="flex-row">
+        <div class="flex-col-50">
+          <div class="slider-wrapper">
+            <div class="slider-container">
+              <div class="slider">
+                <img src="Rooms/1-2.jpg" alt="The Trishul Vista Resort View" />
+                <img src="Rooms/1-1.jpg" alt="Mountain Views" />
+                <img src="Rooms/2-2.jpg" alt="Luxury Rooms" />
+                <img src="Rooms/2-3.jpg" alt="Resort Environment" />
+              </div>
+              <div class="slider-dots">
+                <span class="dot" onclick="currentSlide(0)"></span>
+                <span class="dot" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="flex-col-50">
+          <h2 class="content-title">Our Story</h2>
+          <p class="content-text">
+            The Trishul Vista was founded with a vision to provide the perfect mountain retreat. Nestled in the serene hills of Nainital, Uttarakhand, our resort offers a unique blend of luxury, comfort, and natural beauty. We believe in creating unforgettable experiences for every guest who walks through our doors.
+          </p>
+          <p class="content-text">
+            With years of dedication to hospitality excellence, we have become a preferred destination for travelers seeking peace, rejuvenation, and adventure in the Himalayan region. Our commitment to quality service and warm hospitality sets us apart.
+          </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mission & Vision Section -->
+  <section class="section-light">
+    <div class="container-max">
+      <div class="section-header">
+        <h2 class="section-title">Our Mission & Vision</h2>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
+        
+        <!-- Mission Card -->
+        <div class="mission-card">
+          <div class="mission-icon">
+            <i class="fas fa-bullseye"></i>
+          </div>
+          <h3>Our Mission</h3>
+          <p>
+            To deliver exceptional hospitality experiences that combine luxury, comfort, and authentic care. We aim to create a welcoming environment where every guest feels valued and cared for, while promoting sustainable and eco-friendly practices.
+          </p>
+        </div>
+
+        <!-- Vision Card -->
+        <div class="mission-card">
+          <div class="mission-icon">
+            <i class="fas fa-eye"></i>
+          </div>
+          <h3>Our Vision</h3>
+          <p>
+            To be the most preferred mountain resort destination in the Himalayan region, known for excellence in service, sustainability, and guest satisfaction. We envision a place where nature and luxury coexist harmoniously.
+          </p>
+        </div>
+
+        <!-- Values Card -->
+        <div class="mission-card">
+          <div class="mission-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>Our Values</h3>
+          <p>
+            Integrity, Excellence, Hospitality, and Sustainability are the core values that guide everything we do. We believe in treating our guests, staff, and environment with the respect and care they deserve.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- Why Choose Us Section -->
+  <section class="section-light">
+    <div class="container-max">
+      <div class="section-header">
+        <h2 class="section-title">Why Choose Us</h2>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
+        
+        <div class="why-choose-card">
+          <div class="why-icon">
+            <i class="fas fa-mountain"></i>
+          </div>
+          <h3>Breathtaking Views</h3>
+          <p>Located amidst the majestic Himalayan mountains with panoramic views of the Trishul mountain range and lush valleys.</p>
+        </div>
+
+       
+
+        <div class="why-choose-card">
+          <div class="why-icon">
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h3>Eco-Friendly</h3>
+          <p>Committed to sustainable practices and environment conservation while maintaining luxury and comfort standards.</p>
+        </div>
+
+       
+
+        <div class="why-choose-card">
+          <div class="why-icon">
+            <i class="fas fa-spa"></i>
+          </div>
+          <h3>Wellness & Relaxation</h3>
+          <p>Complete rejuvenation with spa facilities, yoga programs, and wellness activities amidst serene mountain surroundings.</p>
+        </div>
+
+        <div class="why-choose-card">
+          <div class="why-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <h3>Warm Hospitality</h3>
+          <p>Experience the warmth of genuine hospitality that makes every guest feel like family at The Trishul Vista.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Facilities Section -->
+  <section class="section-white">
+    <div class="container-max">
+      <div class="section-header">
+        <h2 class="section-title">Our Facilities</h2>
+        <p class="section-subtitle">Everything you need for a perfect stay</p>
+      </div>
+      
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+        
+        <div class="facility-item">
+          <i class="fas fa-wifi"></i>
+          <h4>Free Wi-Fi</h4>
+          <p>High-speed internet throughout the resort</p>
+        </div>
+
+
+        <div class="facility-item">
+          <i class="fas fa-bath"></i>
+          <h4>Modern Bathrooms</h4>
+          <p>Attached bathrooms with premium amenities</p>
+        </div>
+
+
+        <div class="facility-item">
+          <i class="fas fa-car"></i>
+          <h4>Parking</h4>
+          <p>Secure and spacious parking facilities</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="section-light">
+    <div class="container-max" style="text-align: center; padding: 60px 20px;">
+      <h2 class="section-title">Ready to Experience Paradise?</h2>
+      <p class="section-subtitle" style="margin-bottom: 30px;">Book your unforgettable stay at The Trishul Vista today</p>
+      <a href="booking.html" style="display: inline-block; background-color: #ff9900; color: white; padding: 15px 40px; text-decoration: none; border-radius: 5px; font-weight: bold; font-size: 1.1rem; transition: 0.3s;">Book Now</a>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <div class="section-contact">
+    <h2 class="contact-title"><i class="fa-solid fa-phone"></i> Get in Touch</h2>
+    <p class="contact-info"><i class="fa-solid fa-location-dot"></i> Vill. & Post - Peora, Distt.- Nainital, Uttarakhand 263138</p>
+    <p class="contact-info"><i class="fa-solid fa-envelope"></i> thetrishulvista@gmail.com</p>
+    <p class="contact-info"><i class="fa-solid fa-phone"></i> +91-7055522887, +91-7535861111</p>
+    
+    <div class="social-links">
+      <a href="https://www.youtube.com/@thetrishulvista" target="_blank" class="social-link social-link-youtube" title="YouTube">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a href="https://www.facebook.com/thetrishulvista/?rdid=QPI4nFDR3xsBPrRU" target="_blank" class="social-link social-link-facebook" title="Facebook">
+        <i class="fab fa-facebook"></i>
+      </a>
+      <a href="https://www.instagram.com/thetrishulvista?igsh=MThhc3YycWx4M2Zsbw%3D%3D" target="_blank" class="social-link social-link-instagram" title="Instagram">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Slider functionality
+    let currentSlideIndex = 0;
+    let sliderInterval;
+
+    function showSlide(n) {
+      const slider = document.querySelector('.slider');
+      const dots = document.querySelectorAll('.dot');
+      
+      if (n >= 4) currentSlideIndex = 0;
+      if (n < 0) currentSlideIndex = 3;
+      
+      slider.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+      
+      dots.forEach((dot, index) => {
+        if (index === currentSlideIndex) {
+          dot.style.background = 'rgba(255,255,255,0.8)';
+        } else {
+          dot.style.background = 'rgba(255,255,255,0.5)';
+        }
+      });
+    }
+
+    function changeSlide(n) {
+      clearInterval(sliderInterval);
+      currentSlideIndex += n;
+      showSlide(currentSlideIndex);
+      startAutoSlide();
+    }
+
+    function currentSlide(n) {
+      clearInterval(sliderInterval);
+      currentSlideIndex = n;
+      showSlide(currentSlideIndex);
+      startAutoSlide();
+    }
+
+    function startAutoSlide() {
+      sliderInterval = setInterval(() => {
+        currentSlideIndex++;
+        showSlide(currentSlideIndex);
+      }, 4000);
+    }
+
+    // Start slider on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      showSlide(0);
+      startAutoSlide();
+      
+      // User greeting script
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      const registerLink = document.getElementById("registerLink");
+
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+      if (loggedInUser) {
+        userGreeting.style.display = "inline";
+        logoutLink.style.display = "inline";
+        userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html">Hello, ${loggedInUser.name}</a>`;
+
+        // Hide login/register
+        if (loginLink) loginLink.style.display = "none";
+        if (registerLink) registerLink.style.display = "none";
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    // Close menu when a link is clicked
+    document.querySelectorAll("nav#mainNav a").forEach(link => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    // Close menu when clicking outside of nav
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    // Reset menu state when switching to desktop width
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+  </script>
+
+</body>
+</html>

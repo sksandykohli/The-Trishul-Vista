@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rooms List | The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .rooms-list-hero {
+      min-height: 42vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #fff;
+      background: linear-gradient(rgba(15, 20, 30, 0.55), rgba(15, 20, 30, 0.55)), url("Rooms/2-2.jpg") center/cover no-repeat;
+      padding: 60px 20px;
+    }
+
+    .rooms-list-hero h2 {
+      font-size: clamp(2rem, 4vw, 3rem);
+      margin-bottom: 12px;
+      font-family: Georgia, serif;
+    }
+
+    .rooms-list-wrap {
+      max-width: 1200px;
+      margin: 20px auto 40px;
+      padding: 0 20px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .room-row {
+      background: #fff;
+      border: 1px solid #d9d9d9;
+      display: grid;
+      grid-template-columns: 420px 1fr 280px;
+      align-items: stretch;
+      min-height: 280px;
+    }
+
+    .room-row-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .room-row-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .image-offer-tag {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      padding: 10px 12px;
+      text-align: center;
+      background: rgba(198, 22, 22, 0.92);
+      color: #fff !important;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    }
+
+    .room-row-main {
+      padding: 28px 24px;
+      border-left: 1px solid #d9d9d9;
+      border-right: 1px solid #d9d9d9;
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .room-list-type {
+      color: #3e556f;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .room-list-title {
+      font-size: 2.35rem;
+      color: #0f2f52;
+      margin: 0;
+      line-height: 1.1;
+    }
+
+    .promo-blink {
+      color: #c61616;
+      animation: promoBlink 1.1s steps(2, start) infinite;
+    }
+
+    @keyframes promoBlink {
+      50% {
+        opacity: 0.25;
+      }
+    }
+
+    .room-description {
+      margin: 0;
+      color: #334e6c;
+      font-size: 1.15rem;
+      line-height: 1.4;
+      max-width: 94%;
+    }
+
+    .room-name-line {
+      margin: -6px 0 0 0;
+      color: #2f4e6f;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .food-option-line {
+      margin: 2px 0 0 0;
+      color: #1f6a9a;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .capacity-option-line {
+      margin: 2px 0 0 0;
+      color: #1d4f2f;
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .room-feature-icons {
+      display: flex;
+      gap: 16px;
+      color: #2d4d6d;
+      font-size: 1.4rem;
+    }
+
+    .room-row-side {
+      display: grid;
+      align-content: center;
+      justify-items: center;
+      padding: 20px;
+      gap: 14px;
+    }
+
+    .guest-icon {
+      color: #3180b5;
+      font-size: 1.6rem;
+    }
+
+    .room-price {
+      margin: 0;
+      color: #234162;
+      font-weight: 700;
+      font-size: 2.2rem;
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    .price-subtext {
+      margin: 0;
+      color: #2f4e6f;
+      font-size: 1.1rem;
+      text-align: center;
+    }
+
+    .side-divider {
+      width: 80%;
+      border: 0;
+      border-top: 1px solid #e5e5e5;
+      margin: 4px 0;
+    }
+
+    .details-btn {
+      border: 0;
+      background: #2e8abc;
+      color: #fff;
+      text-decoration: none;
+      font-weight: 700;
+      padding: 10px 26px;
+      border-radius: 6px;
+      font-size: 1.15rem;
+      text-align: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .details-btn:hover {
+      background: #2378a8;
+    }
+
+    #roomQuickView .popup-box {
+      max-width: 1080px;
+      width: 94%;
+      text-align: left;
+      padding: 0;
+      overflow: hidden;
+      max-height: 92vh;
+    }
+
+    .quick-view-layout {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr;
+    }
+
+    .quick-view-media {
+      position: relative;
+      background: #111;
+    }
+
+    .quick-view-layout img {
+      width: 100%;
+      height: 100%;
+      min-height: 520px;
+      object-fit: cover;
+      margin: 0;
+      border-radius: 0;
+    }
+
+    .slider-nav-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: 1rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .slider-nav-btn.prev {
+      left: 10px;
+    }
+
+    .slider-nav-btn.next {
+      right: 10px;
+    }
+
+    .slider-count {
+      position: absolute;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.55);
+      color: #fff;
+      font-size: 0.8rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+    }
+
+    .quick-view-content {
+      padding: 30px;
+      display: grid;
+      gap: 14px;
+      align-content: center;
+    }
+
+    .quick-view-content h3 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.2;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+    }
+
+    .quick-view-price {
+      margin: 0;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1f6a9a;
+      line-height: 1.3;
+      text-align: left;
+    }
+
+    .quick-view-offer {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      margin: 0;
+      display: none;
+      background: #c61616;
+      color: #fff !important;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 6px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.3px;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    }
+
+    #quickViewDesc {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: #425a73;
+    }
+
+    .quick-view-content ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      color: #334e6c;
+      margin: 4px 0 0 0;
+      padding: 0;
+    }
+
+    .quick-view-content li {
+      font-size: 0.98rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 780px) {
+      .room-row {
+        grid-template-columns: 1fr;
+      }
+
+      .room-row-image {
+        min-height: 220px;
+      }
+
+      .room-row-main {
+        border-left: 0;
+        border-right: 0;
+        border-top: 1px solid #d9d9d9;
+        border-bottom: 1px solid #d9d9d9;
+      }
+
+      .room-list-title {
+        font-size: 1.9rem;
+      }
+
+      .room-description {
+        font-size: 1rem;
+      }
+
+      .room-name-line {
+        font-size: 0.88rem;
+      }
+
+      .food-option-line {
+        font-size: 0.85rem;
+      }
+
+      .capacity-option-line {
+        font-size: 0.85rem;
+      }
+
+      .room-price {
+        font-size: 2rem;
+      }
+
+      .price-subtext,
+      .details-btn {
+        font-size: 1.2rem;
+      }
+
+      .quick-view-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-view-layout img {
+        height: 300px;
+        min-height: 300px;
+      }
+
+      .quick-view-content {
+        padding: 22px;
+      }
+
+      .quick-view-content h3 {
+        font-size: 1.5rem;
+      }
+
+      .quick-view-price {
+        font-size: 1.15rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="rooms.html" class="active">Rooms</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="register.html" id="registerLink">Register</a></li>
+          <li><a href="login.html" id="loginLink">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="rooms-list-hero">
+    <div>
+      <h2>Rooms List</h2>
+      <p>Choose the perfect stay with mountain views and premium comfort.</p>
+    </div>
+  </section>
+
+  <section class="section-white" style="padding-top: 10px;">
+    <div class="rooms-list-wrap">
+      <article class="room-row">
+        <div class="room-row-image">
+          <img src="Rooms/1-1.jpg" alt="Serenity Classic Suite" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 3,500 Per Night', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony'])" style="cursor: pointer;" />
+        </div>
+        <div class="room-row-main">
+          <h3 class="room-list-title">Serenity Classic Suite</h3>
+          <p class="room-description">A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.</p>
+          <div class="room-feature-icons">
+            <i class="fas fa-wifi" aria-hidden="true"></i>
+            <i class="fas fa-bath" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="room-row-side">
+          <i class="fas fa-user guest-icon" aria-hidden="true"></i>
+          <p class="room-price">&#8377; 3,500</p>
+          <p class="price-subtext">Per Night</p>
+          <hr class="side-divider" />
+          <button class="details-btn" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 3,500 Per Night', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony'])">Details</button>
+        </div>
+      </article>
+
+      <article class="room-row">
+        <div class="room-row-image">
+          <img src="Rooms/2-3.jpg" alt="Pinewood Attic Suite" onclick="openQuickView('pinewood', 'Pinewood Attic Suite', '&#8377; 5,000 Per Night', 'Experience the magic of Himalayan living in our Pinewood Attic Suite, warm, inviting, and unforgettable.', ['Free Wi-Fi', 'Attic wood interior', 'Beautiful valley view'])" style="cursor: pointer;" />
+        </div>
+        <div class="room-row-main">
+          <h3 class="room-list-title">Pinewood Attic Suite</h3>
+          <p class="room-description">Experience the magic of Himalayan living in our Pinewood Attic Suite, warm, inviting, and unforgettable.</p>
+          <div class="room-feature-icons">
+            <i class="fas fa-wifi" aria-hidden="true"></i>
+            <i class="fas fa-bath" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="room-row-side">
+          <i class="fas fa-user-friends guest-icon" aria-hidden="true"></i>
+          <p class="room-price">&#8377; 5,000</p>
+          <p class="price-subtext">Per Night</p>
+          <hr class="side-divider" />
+          <button class="details-btn" onclick="openQuickView('pinewood', 'Pinewood Attic Suite', '&#8377; 5,000 Per Night', 'Experience the magic of Himalayan living in our Pinewood Attic Suite, warm, inviting, and unforgettable.', ['Free Wi-Fi', 'Attic wood interior', 'Beautiful valley view'])">Details</button>
+        </div>
+      </article>
+
+      <!-- room 3 -->
+      <article class="room-row">
+        <div class="room-row-image">
+          <img src="Rooms/1-1.jpg" alt="Serenity Classic Suite" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 8,500 Book for 5 Days', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '50% OFF Special Offer')" style="cursor: pointer;" />
+          <p class="image-offer-tag">Special Offer: 50% OFF</p>
+        </div>
+        <div class="room-row-main">
+          <h3 class="room-list-title promo-blink">Book for 5 Days</h3>
+          <p class="room-name-line">Room Name - Serenity Classic Suite</p>
+          <p class="food-option-line"><i class="fas fa-utensils" aria-hidden="true"></i> Food Option: &#8377;300 per person per day</p>
+          <p class="capacity-option-line"><i class="fas fa-users" aria-hidden="true"></i> Maximum 3 persons allowed</p>
+          <p class="room-description">A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.</p>
+          <div class="room-feature-icons">
+            <i class="fas fa-wifi" aria-hidden="true"></i>
+            <i class="fas fa-bath" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="room-row-side">
+          <i class="fas fa-user guest-icon" aria-hidden="true"></i>
+          <p class="room-price">&#8377; 8,500</p>
+          <p class="price-subtext">Book 5 Day</p>
+          <hr class="side-divider" />
+          <button class="details-btn" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 8,500 Book for 5 Days', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '50% OFF Special Offer')">Details</button>
+        </div>
+      </article>
+
+      <!-- room 4 -->
+      <article class="room-row">
+        <div class="room-row-image">
+          <img src="Rooms/2-3.jpg" alt="Serenity Classic Suite" onclick="openQuickView('pinewood', 'Serenity Classic Suite', '&#8377; 15,750 Book for 10 Days', 'A spacious long-stay option designed for comfort, scenic views, and peaceful mountain living.', ['Free Wi-Fi', 'Attic wood interior', 'Beautiful valley view', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '55% OFF Special Offer')" style="cursor: pointer;" />
+          <p class="image-offer-tag">Special Offer: 55% OFF</p>
+        </div>
+        <div class="room-row-main">
+          <h3 class="room-list-title promo-blink">Book for 10 Days</h3>
+          <p class="room-name-line">Room Name - Serenity Classic Suite</p>
+          <p class="food-option-line"><i class="fas fa-utensils" aria-hidden="true"></i> Food Option: &#8377;300 per person per day</p>
+          <p class="capacity-option-line"><i class="fas fa-users" aria-hidden="true"></i> Maximum 3 persons allowed</p>
+          <p class="room-description">A spacious long-stay option designed for comfort, scenic views, and peaceful mountain living.</p>
+          <div class="room-feature-icons">
+            <i class="fas fa-wifi" aria-hidden="true"></i>
+            <i class="fas fa-bath" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="room-row-side">
+          <i class="fas fa-user-friends guest-icon" aria-hidden="true"></i>
+          <p class="room-price">&#8377; 15,750</p>
+          <p class="price-subtext">Book 10 Day</p>
+          <hr class="side-divider" />
+          <button class="details-btn" onclick="openQuickView('pinewood', 'Pinewood Attic Suite', '&#8377; 15,750 Book for 10 Days', 'A spacious long-stay option designed for comfort, scenic views, and peaceful mountain living.', ['Free Wi-Fi', 'Attic wood interior', 'Beautiful valley view', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '55% OFF Special Offer')">Details</button>
+        </div>
+      </article>
+
+      <!-- room 5 -->
+      <article class="room-row">
+        <div class="room-row-image">
+          <img src="Rooms/1-2.jpg" alt="Serenity Classic Suite" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 36,750 Book for 30 Days', 'An ideal long-stay plan crafted for comfort, value, and a peaceful mountain experience.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '65% OFF Special Offer')" style="cursor: pointer;" />
+          <p class="image-offer-tag">Special Offer: 65% OFF</p>
+        </div>
+        <div class="room-row-main">
+          <h3 class="room-list-title promo-blink">Book for 30 Days</h3>
+          <p class="room-name-line">Room Name - Serenity Classic Suite</p>
+          <p class="food-option-line"><i class="fas fa-utensils" aria-hidden="true"></i> Food Option: &#8377;300 per person per day</p>
+          <p class="capacity-option-line"><i class="fas fa-users" aria-hidden="true"></i> Maximum 3 persons allowed</p>
+          <p class="room-description">An ideal long-stay plan crafted for comfort, value, and a peaceful mountain experience.</p>
+          <div class="room-feature-icons">
+            <i class="fas fa-wifi" aria-hidden="true"></i>
+            <i class="fas fa-bath" aria-hidden="true"></i>
+          </div>
+        </div>
+        <div class="room-row-side">
+          <i class="fas fa-user-friends guest-icon" aria-hidden="true"></i>
+          <p class="room-price">&#8377; 36,750</p>
+          <p class="price-subtext">Book 30 Day</p>
+          <hr class="side-divider" />
+          <button class="details-btn" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 36,750 Book for 30 Days', 'An ideal long-stay plan crafted for comfort, value, and a peaceful mountain experience.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '65% OFF Special Offer')">Details</button>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <div class="section-contact">
+    <h2 class="contact-title"><i class="fa-solid fa-phone"></i> Contact Us</h2>
+    <p class="contact-info"><i class="fa-solid fa-location-dot"></i> Vill. & Post - Peora, Distt.- Nainital, Uttarakhand 263138</p>
+    <p class="contact-info"><i class="fa-solid fa-envelope"></i> thetrishulvista@gmail.com</p>
+    <p class="contact-info"><i class="fa-solid fa-phone"></i> +91-7055522887, +91-7535861111</p>
+  </div>
+
+  <footer>
+    <p>Copyright 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <div id="roomQuickView" class="popup-overlay" onclick="closeQuickView(event)">
+    <div class="popup-box">
+      <span class="close-btn" onclick="closeQuickView(event)">&times;</span>
+      <div class="quick-view-layout">
+        <div class="quick-view-media">
+          <img id="quickViewImg" src="" alt="Room Preview" />
+          <p class="quick-view-offer" id="quickViewOffer"></p>
+          <button class="slider-nav-btn prev" onclick="changeQuickViewImage(-1)" type="button"><i class="fas fa-chevron-left"></i></button>
+          <button class="slider-nav-btn next" onclick="changeQuickViewImage(1)" type="button"><i class="fas fa-chevron-right"></i></button>
+          <p class="slider-count" id="quickViewCount">1 / 4</p>
+        </div>
+        <div class="quick-view-content">
+          <h3 id="quickViewTitle"></h3>
+          <p class="quick-view-price" id="quickViewPrice"></p>
+          <p id="quickViewDesc"></p>
+          <ul id="quickViewFeatures"></ul>
+          <a class="room-list-btn btn-primary" href="booking.html">Book This Room</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    document.querySelectorAll("nav#mainNav a").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      const registerLink = document.getElementById("registerLink");
+
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      if (loggedInUser) {
+        userGreeting.style.display = "inline";
+        logoutLink.style.display = "inline";
+        userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
+        if (loginLink) loginLink.style.display = "none";
+        if (registerLink) registerLink.style.display = "none";
+      }
+    });
+
+    const roomGalleries = {
+      serenity: ["Rooms/1-1.jpg", "Rooms/1-2.jpg", "Rooms/2-1.jpg", "Rooms/2.webp"],
+      pinewood: ["Rooms/2-3.jpg", "Rooms/2-2.jpg", "Rooms/2-1.jpg", "Rooms/1-2.jpg"]
+    };
+
+    let currentGallery = [];
+    let currentGalleryIndex = 0;
+
+    function renderQuickViewImage() {
+      if (!currentGallery.length) return;
+      document.getElementById("quickViewImg").src = currentGallery[currentGalleryIndex];
+      document.getElementById("quickViewCount").textContent = `${currentGalleryIndex + 1} / ${currentGallery.length}`;
+    }
+
+    function changeQuickViewImage(step) {
+      if (!currentGallery.length) return;
+      currentGalleryIndex = (currentGalleryIndex + step + currentGallery.length) % currentGallery.length;
+      renderQuickViewImage();
+    }
+
+    function openQuickView(roomKey, title, price, desc, features, offerText = "") {
+      currentGallery = roomGalleries[roomKey] || [];
+      currentGalleryIndex = 0;
+      renderQuickViewImage();
+      document.getElementById("quickViewTitle").textContent = title;
+      document.getElementById("quickViewPrice").textContent = price;
+      document.getElementById("quickViewDesc").textContent = desc;
+      const offerEl = document.getElementById("quickViewOffer");
+      if (offerText) {
+        offerEl.textContent = offerText;
+        offerEl.style.display = "block";
+      } else {
+        offerEl.textContent = "";
+        offerEl.style.display = "none";
+      }
+
+      const featureList = document.getElementById("quickViewFeatures");
+      featureList.innerHTML = "";
+      features.forEach((feature) => {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="fas fa-check-circle" style="color:#28a745; margin-right:8px;"></i>${feature}`;
+        featureList.appendChild(li);
+      });
+
+      document.getElementById("roomQuickView").style.display = "flex";
+    }
+
+    function closeQuickView(event) {
+      if (
+        event.target.classList.contains("popup-overlay") ||
+        event.target.classList.contains("close-btn")
+      ) {
+        document.getElementById("roomQuickView").style.display = "none";
+      }
+    }
+
+    document.addEventListener("keydown", function (event) {
+      const popup = document.getElementById("roomQuickView");
+      if (popup.style.display !== "flex") return;
+      if (event.key === "ArrowLeft") changeQuickViewImage(-1);
+      if (event.key === "ArrowRight") changeQuickViewImage(1);
+    });
+  </script>
+</body>
+</html>
