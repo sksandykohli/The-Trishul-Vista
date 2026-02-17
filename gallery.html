@@ -1,0 +1,423 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gallery | The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .gallery-hero {
+      min-height: 42vh;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: #fff;
+      padding: 56px 20px;
+      background: linear-gradient(rgba(11, 24, 41, 0.66), rgba(11, 24, 41, 0.66)), url("images/o2.jpg") center/cover no-repeat;
+    }
+
+    .gallery-hero h2 {
+      font-size: clamp(2rem, 4.2vw, 3rem);
+      margin-bottom: 10px;
+      font-family: Georgia, serif;
+      letter-spacing: 0.4px;
+    }
+
+    .gallery-shell {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 34px 18px 48px;
+    }
+
+    .gallery-title {
+      margin: 0 0 18px;
+      color: #0f2f52;
+      font-size: clamp(1.4rem, 2.8vw, 2rem);
+      font-family: Georgia, serif;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 34px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      cursor: pointer;
+      min-height: 190px;
+      box-shadow: 0 8px 20px rgba(7, 22, 40, 0.15);
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.45s ease;
+    }
+
+    .gallery-item::after {
+      content: "\f00e";
+      font-family: "Font Awesome 6 Free";
+      font-weight: 900;
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      font-size: 1.1rem;
+      background: linear-gradient(to top, rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.08));
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.07);
+    }
+
+    .gallery-item:hover::after {
+      opacity: 1;
+    }
+
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .short-card {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 10px 24px rgba(7, 22, 40, 0.14);
+      border: 1px solid #d8e4ef;
+      overflow: hidden;
+    }
+
+    .short-card iframe {
+      width: 100%;
+      aspect-ratio: 9 / 16;
+      border: 0;
+      display: block;
+      background: #000;
+    }
+
+    .short-meta {
+      padding: 10px 12px;
+      color: #334e68;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    #galleryLightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.92);
+      z-index: 7000;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    #galleryLightbox.show {
+      display: flex;
+    }
+
+    .lightbox-wrap {
+      position: relative;
+      max-width: 1050px;
+      width: 100%;
+      max-height: 92vh;
+    }
+
+    #galleryLightboxImg {
+      width: 100%;
+      max-height: 92vh;
+      object-fit: contain;
+      border-radius: 10px;
+    }
+
+    .lb-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: #fff;
+      background: rgba(0, 0, 0, 0.45);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .lb-btn.prev { left: 8px; }
+    .lb-btn.next { right: 8px; }
+
+    .lb-close {
+      position: absolute;
+      right: 8px;
+      top: 8px;
+      border: 0;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.45);
+      color: #fff;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+
+    @media (max-width: 900px) {
+      .video-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .span-3, .span-4, .span-5, .span-6 {
+        grid-column: span 6;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .image-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .span-3, .span-4, .span-5, .span-6 {
+        grid-column: span 1;
+      }
+
+      .video-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery-item {
+        min-height: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="gallery.html" class="active">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="auth.html" id="loginLink">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="gallery-hero">
+    <div>
+      <h2>Our Gallery</h2>
+      <p>Explore scenic views, rooms, dining moments, and resort highlights.</p>
+    </div>
+  </section>
+
+  <main class="gallery-shell">
+    <h3 class="gallery-title">Image Gallery</h3>
+    <section class="image-grid" id="imageGrid">
+      <div class="gallery-item span-5"><img src="images/o1.jpg" alt="Mountain View" /></div>
+      <div class="gallery-item span-3"><img src="Rooms/1-1.jpg" alt="Serenity Classic Suite" /></div>
+      <div class="gallery-item span-4"><img src="images/b-2.jpg" alt="Dining Area" /></div>
+      <div class="gallery-item span-4"><img src="Rooms/2-3.jpg" alt="Pinewood Attic Suite" /></div>
+      <div class="gallery-item span-4"><img src="images/2.jpg" alt="Himalayan View" /></div>
+      <div class="gallery-item span-4"><img src="images/o3.jpg" alt="Outdoor Resort View" /></div>
+      <div class="gallery-item span-6"><img src="images/b-4.jpg" alt="Resort Exterior" /></div>
+      <div class="gallery-item span-3"><img src="Rooms/2-2.jpg" alt="Room Interior" /></div>
+      <div class="gallery-item span-3"><img src="food/dining1.png" alt="Signature Dining" /></div>
+      <div class="gallery-item span-4"><img src="images/3.jpg" alt="Nature Around Resort" /></div>
+      <div class="gallery-item span-4"><img src="food/dining2.png" alt="Sea Breeze Lounge" /></div>
+      <div class="gallery-item span-4"><img src="food/dining3.png" alt="Candlelight Courtyard" /></div>
+    </section>
+
+    <h3 class="gallery-title">Short Videos</h3>
+    <section class="video-grid">
+      <article class="short-card">
+        <iframe src="https://www.youtube.com/embed/l4ABRiIMD4U" title="Short Video 1" loading="lazy" allowfullscreen></iframe>
+        <p class="short-meta">Quick resort glimpse</p>
+      </article>
+      <article class="short-card">
+        <iframe src="https://www.youtube.com/embed/TKdMYWzXVrI" title="Short Video 2" loading="lazy" allowfullscreen></iframe>
+        <p class="short-meta">Room & view highlight</p>
+      </article>
+      <article class="short-card">
+        <iframe src="https://www.youtube.com/embed/-M3Mn6uXAQM" title="Short Video 3" loading="lazy" allowfullscreen></iframe>
+        <p class="short-meta">Dining & ambience</p>
+      </article>
+      <article class="short-card">
+        <iframe src="https://www.youtube.com/embed/Fz4RCgpBYbs" title="Short Video 4" loading="lazy" allowfullscreen></iframe>
+        <p class="short-meta">Property tour in short</p>
+      </article>
+    </section>
+  </main>
+
+  <div id="galleryLightbox" onclick="closeLightbox(event)">
+    <div class="lightbox-wrap">
+      <button class="lb-close" onclick="closeLightbox(event)" type="button"><i class="fas fa-times"></i></button>
+      <button class="lb-btn prev" onclick="changeImage(-1)" type="button"><i class="fas fa-chevron-left"></i></button>
+      <img id="galleryLightboxImg" src="" alt="Gallery Preview" />
+      <button class="lb-btn next" onclick="changeImage(1)" type="button"><i class="fas fa-chevron-right"></i></button>
+    </div>
+  </div>
+
+  <footer>
+    <p>Copyright 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <script>
+    const galleryImages = Array.from(document.querySelectorAll("#imageGrid img")).map((img) => img.src);
+    let currentImageIndex = 0;
+
+    function openLightbox(index) {
+      currentImageIndex = index;
+      document.getElementById("galleryLightboxImg").src = galleryImages[currentImageIndex];
+      document.getElementById("galleryLightbox").classList.add("show");
+    }
+
+    function closeLightbox(event) {
+      if (event.target.id === "galleryLightbox" || event.target.closest(".lb-close")) {
+        document.getElementById("galleryLightbox").classList.remove("show");
+      }
+    }
+
+    function changeImage(step) {
+      currentImageIndex = (currentImageIndex + step + galleryImages.length) % galleryImages.length;
+      document.getElementById("galleryLightboxImg").src = galleryImages[currentImageIndex];
+    }
+
+    document.querySelectorAll("#imageGrid .gallery-item").forEach((item, index) => {
+      item.addEventListener("click", () => openLightbox(index));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      const lightbox = document.getElementById("galleryLightbox");
+      if (!lightbox.classList.contains("show")) return;
+      if (event.key === "Escape") lightbox.classList.remove("show");
+      if (event.key === "ArrowLeft") changeImage(-1);
+      if (event.key === "ArrowRight") changeImage(1);
+    });
+
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    document.querySelectorAll("nav#mainNav a").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      const registerLink = document.getElementById("registerLink");
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+      if (loggedInUser) {
+        userGreeting.style.display = "inline";
+        logoutLink.style.display = "inline";
+        userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
+        if (loginLink) loginLink.style.display = "none";
+        if (registerLink) registerLink.style.display = "none";
+      }
+    });
+
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
+</body>
+</html>
+
+

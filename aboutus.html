@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -30,8 +30,7 @@
           <li><a href="booking.html">Booking</a></li>
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="register.html" id="registerLink">Register</a></li>
-          <li><a href="login.html" id="loginLink">Login</a></li>
+          <li><a href="auth.html" id="loginLink">Login</a></li>
           <li id="userGreeting"></li>
           <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
         </ul>
@@ -240,7 +239,7 @@
   </div>
 
   <footer>
-    <p>© 2025 The Trishul Vista | All rights reserved.</p>
+    <p>Â© 2025 The Trishul Vista | All rights reserved.</p>
   </footer>
 
   <script>
@@ -352,7 +351,45 @@
     window.addEventListener("resize", function () {
       if (window.innerWidth > 768) closeMobileMenu();
     });
-  </script>
+
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
 
 </body>
 </html>
+
+

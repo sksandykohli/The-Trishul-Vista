@@ -1,0 +1,1050 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Panel | The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .admin-page {
+      min-height: 86vh;
+      padding: 26px 14px 44px;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(46, 138, 188, 0.18), transparent 35%),
+        radial-gradient(circle at 92% 86%, rgba(255, 153, 0, 0.17), transparent 33%),
+        linear-gradient(135deg, #eef4ff 0%, #fff7eb 100%);
+    }
+
+    .admin-wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 14px;
+    }
+
+    .admin-card {
+      background: #fff;
+      border: 1px solid #dce8f3;
+      border-radius: 14px;
+      box-shadow: 0 10px 24px rgba(16, 42, 67, 0.1);
+      padding: 16px;
+    }
+
+    .admin-title {
+      margin: 0;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+    }
+
+    .admin-sub {
+      margin: 4px 0 0;
+      color: #486581;
+      font-size: 0.92rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      background: #f8fbff;
+      border: 1px solid #dce8f3;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .stat p {
+      margin: 0;
+    }
+
+    .stat .label {
+      color: #627d98;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .stat .value {
+      margin-top: 6px;
+      color: #102a43;
+      font-size: 1.28rem;
+      font-weight: 800;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      align-items: end;
+      margin-top: 10px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+    }
+
+    .field label {
+      color: #243b53;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select {
+      border: 1px solid #d8e2ed;
+      border-radius: 8px;
+      padding: 10px 11px;
+      font: inherit;
+      color: #102a43;
+      background: #fff;
+    }
+
+    .tab-switch {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .panel-tab {
+      border: 1px solid #d4e2ef;
+      background: #f4f8fc;
+      color: #355070;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .panel-tab.active {
+      background: #2e8abc;
+      color: #fff;
+      border-color: #2e8abc;
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      color: #0f2f52;
+      font-size: 1.12rem;
+      font-family: Georgia, serif;
+    }
+
+    .list {
+      display: grid;
+      gap: 8px;
+      max-height: 480px;
+      overflow: auto;
+      padding-right: 2px;
+    }
+
+    .item {
+      border: 1px solid #dfeaf4;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fbfdff;
+      display: grid;
+      gap: 8px;
+    }
+
+    .item-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .item-id {
+      margin: 0;
+      color: #486581;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .badge {
+      padding: 4px 9px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      border: 1px solid transparent;
+    }
+
+    .badge.paid {
+      background: #edfdf4;
+      color: #0f6a3f;
+      border-color: #bdeccc;
+    }
+
+    .badge.pending {
+      background: #fff7e8;
+      color: #9a6700;
+      border-color: #ffe0aa;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 10px;
+      color: #334e68;
+      font-size: 0.85rem;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 7px 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .btn.edit {
+      background: #2e8abc;
+      color: #fff;
+    }
+
+    .btn.warn {
+      background: #f59f00;
+      color: #fff;
+    }
+
+    .btn.danger {
+      background: #e64949;
+      color: #fff;
+    }
+
+    .empty {
+      border: 1px dashed #d1deec;
+      border-radius: 10px;
+      padding: 18px 10px;
+      text-align: center;
+      color: #627d98;
+      background: #f9fbfe;
+    }
+
+    .admin-msg {
+      margin-top: 8px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      display: none;
+    }
+
+    .admin-msg.success {
+      display: block;
+      background: #edfdf4;
+      color: #0f6a3f;
+      border: 1px solid #bdeccc;
+    }
+
+    .admin-msg.error {
+      display: block;
+      background: #fff1f0;
+      color: #9f1d1d;
+      border: 1px solid #ffc9c5;
+    }
+
+    .confirm-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 7000;
+    }
+
+    .confirm-popup.show {
+      display: flex;
+    }
+
+    .confirm-box {
+      width: min(430px, 95vw);
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #dce8f3;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      padding: 16px;
+    }
+
+    .confirm-box h4 {
+      margin: 0 0 8px;
+      color: #102a43;
+      font-size: 1.08rem;
+    }
+
+    .confirm-box p {
+      margin: 0 0 14px;
+      color: #486581;
+      line-height: 1.5;
+      font-size: 0.91rem;
+    }
+
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+    }
+
+    .confirm-btn.cancel {
+      background: #eef3f8;
+      color: #2f4e6f;
+    }
+
+    .confirm-btn.ok {
+      background: #e64949;
+      color: #fff;
+    }
+
+    .admin-login {
+      max-width: 420px;
+      margin: 30px auto 0;
+    }
+
+    .admin-login h3 {
+      margin: 0 0 10px;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: 1.35rem;
+    }
+
+    .admin-actions-top {
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
+    }
+
+    .insight-head {
+      margin: 0 0 8px;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: 1.14rem;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .insight-box {
+      background: #f7fbff;
+      border: 1px solid #d9e8f6;
+      border-radius: 10px;
+      padding: 11px;
+    }
+
+    .insight-label {
+      margin: 0;
+      color: #627d98;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .insight-value {
+      margin: 5px 0 0;
+      color: #102a43;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+
+    .insight-sections {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .insight-panel {
+      border: 1px solid #dce8f3;
+      border-radius: 10px;
+      background: #fbfdff;
+      padding: 11px;
+    }
+
+    .insight-panel h4 {
+      margin: 0 0 8px;
+      color: #1f4068;
+      font-size: 0.92rem;
+    }
+
+    .insight-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 6px;
+      color: #334e68;
+      font-size: 0.86rem;
+    }
+
+    .insight-list li {
+      border: 1px solid #e4edf6;
+      border-radius: 7px;
+      background: #fff;
+      padding: 7px 8px;
+    }
+
+    @media (max-width: 980px) {
+      .stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .stats {
+        grid-template-columns: 1fr;
+      }
+      .meta {
+        grid-template-columns: 1fr;
+      }
+      .insight-grid {
+        grid-template-columns: 1fr;
+      }
+      .insight-sections {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="auth.html" id="loginLink">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="admin-page">
+    <section class="admin-wrap" id="adminLoginView">
+      <article class="admin-card admin-login">
+        <h3>Admin Access</h3>
+        <div class="field">
+          <label for="adminEmail">Admin Email</label>
+          <input id="adminEmail" type="email" placeholder="admin@trishulvista.com" />
+        </div>
+        <div class="field">
+          <label for="adminPassword">Admin Password</label>
+          <input id="adminPassword" type="password" placeholder="Enter password" />
+        </div>
+        <button class="dash-btn primary" style="width:100%;margin-top:10px;" type="button" onclick="adminLogin()">Login as Admin</button>
+        <p id="adminLoginMsg" class="admin-msg"></p>
+      </article>
+    </section>
+
+    <section class="admin-wrap" id="adminDashboardView" style="display:none;">
+      <article class="admin-card">
+        <h2 class="admin-title">Admin Dashboard</h2>
+        <p class="admin-sub">Manage bookings and registered users from one place.</p>
+        <div class="admin-actions-top">
+          <button class="btn warn" type="button" onclick="exportBookings()"><i class="fas fa-file-export"></i> Export Bookings (Excel)</button>
+          <button class="btn danger" type="button" onclick="adminLogout()"><i class="fas fa-right-from-bracket"></i> Admin Logout</button>
+        </div>
+      </article>
+
+      <section class="stats">
+        <article class="stat"><p class="label">Total Bookings</p><p class="value" id="sBookings">0</p></article>
+        <article class="stat"><p class="label">Paid Bookings</p><p class="value" id="sPaid">0</p></article>
+        <article class="stat"><p class="label">Total Users</p><p class="value" id="sUsers">0</p></article>
+        <article class="stat"><p class="label">Revenue</p><p class="value" id="sRevenue">INR 0</p></article>
+      </section>
+
+      <article class="admin-card">
+        <div class="toolbar">
+          <div class="field">
+            <label for="searchInput">Search (name/email/booking ID)</label>
+            <input id="searchInput" type="text" placeholder="Type to filter..." />
+          </div>
+        </div>
+        <p id="adminMsg" class="admin-msg"></p>
+      </article>
+
+      <article class="admin-card">
+        <div class="tab-switch">
+          <button class="panel-tab active" type="button" data-panel="bookingsPanelWrap">Bookings</button>
+          <button class="panel-tab" type="button" data-panel="usersPanelWrap">Registered Users</button>
+        </div>
+        <section id="bookingsPanelWrap">
+          <h3 class="panel-title">Bookings</h3>
+          <div id="bookingsPanel" class="list"></div>
+        </section>
+        <section id="usersPanelWrap" style="display:none;">
+          <h3 class="panel-title">Registered Users</h3>
+          <div id="usersPanel" class="list"></div>
+        </section>
+      </article>
+
+      <article class="admin-card">
+        <h3 class="insight-head">Visitor Counter & User Insights</h3>
+        <section class="insight-grid">
+          <article class="insight-box"><p class="insight-label">Total Site Visits</p><p class="insight-value" id="vTotalVisits">0</p></article>
+          <article class="insight-box"><p class="insight-label">Unique Visitors</p><p class="insight-value" id="vUniqueVisitors">0</p></article>
+          <article class="insight-box"><p class="insight-label">Today's Visits</p><p class="insight-value" id="vTodayVisits">0</p></article>
+          <article class="insight-box"><p class="insight-label">Returning Visitors</p><p class="insight-value" id="vReturning">0</p></article>
+        </section>
+        <section class="insight-sections">
+          <article class="insight-panel">
+            <h4>Top Visited Pages</h4>
+            <ul class="insight-list" id="topPagesList"></ul>
+          </article>
+          <article class="insight-panel">
+            <h4>User Snapshot</h4>
+            <ul class="insight-list" id="userInsightsList"></ul>
+          </article>
+        </section>
+      </article>
+    </section>
+  </main>
+
+  <div id="confirmPopup" class="confirm-popup" aria-hidden="true">
+    <div class="confirm-box">
+      <h4>Confirm Action</h4>
+      <p id="confirmPopupText">Are you sure?</p>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-btn cancel" onclick="closeConfirmPopup()">Cancel</button>
+        <button type="button" class="confirm-btn ok" onclick="proceedConfirmAction()">Yes, Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Copyright 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <script>
+    const ADMIN_EMAIL = "admin@trishulvista.com";
+    const ADMIN_PASSWORD = "Admin@123";
+
+    const adminLoginView = document.getElementById("adminLoginView");
+    const adminDashboardView = document.getElementById("adminDashboardView");
+    const adminLoginMsg = document.getElementById("adminLoginMsg");
+    const adminMsg = document.getElementById("adminMsg");
+    const bookingsPanel = document.getElementById("bookingsPanel");
+    const usersPanel = document.getElementById("usersPanel");
+    const searchInput = document.getElementById("searchInput");
+    const panelTabs = document.querySelectorAll(".panel-tab");
+    const bookingsPanelWrap = document.getElementById("bookingsPanelWrap");
+    const usersPanelWrap = document.getElementById("usersPanelWrap");
+    const topPagesList = document.getElementById("topPagesList");
+    const userInsightsList = document.getElementById("userInsightsList");
+    const confirmPopup = document.getElementById("confirmPopup");
+    const confirmPopupText = document.getElementById("confirmPopupText");
+    let confirmAction = null;
+
+    function getAnalytics() {
+      const raw = JSON.parse(localStorage.getItem("trishulVisitorAnalytics") || "{}");
+      return {
+        totalVisits: Number(raw.totalVisits || 0),
+        uniqueVisitors: raw.uniqueVisitors || {},
+        dailyVisits: raw.dailyVisits || {},
+        pageVisits: raw.pageVisits || {},
+        lastVisitAt: raw.lastVisitAt || null
+      };
+    }
+
+    function formatDateTime(ts) {
+      if (!ts) return "-";
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return "-";
+      return d.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+    }
+
+    function showMsg(el, type, text) {
+      el.className = `admin-msg ${type}`;
+      el.textContent = text;
+    }
+
+    function clearMsg(el) {
+      el.className = "admin-msg";
+      el.textContent = "";
+    }
+
+    function openConfirmPopup(message, actionFn) {
+      confirmPopupText.textContent = message;
+      confirmAction = actionFn;
+      confirmPopup.classList.add("show");
+      confirmPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function closeConfirmPopup() {
+      confirmPopup.classList.remove("show");
+      confirmPopup.setAttribute("aria-hidden", "true");
+      confirmAction = null;
+    }
+
+    function proceedConfirmAction() {
+      if (typeof confirmAction === "function") {
+        confirmAction();
+      }
+      closeConfirmPopup();
+    }
+
+    window.closeConfirmPopup = closeConfirmPopup;
+    window.proceedConfirmAction = proceedConfirmAction;
+
+    function getBookings() {
+      return JSON.parse(localStorage.getItem("trishulBookings") || "[]");
+    }
+
+    function getUsers() {
+      return JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+    }
+
+    function refreshStats() {
+      const bookings = getBookings();
+      const users = getUsers();
+      const paid = bookings.filter((b) => (b.paymentStatus || "").toLowerCase() === "paid").length;
+      const revenue = bookings.reduce((sum, b) => sum + Number(b.total || 0), 0);
+
+      document.getElementById("sBookings").textContent = String(bookings.length);
+      document.getElementById("sPaid").textContent = String(paid);
+      document.getElementById("sUsers").textContent = String(users.length);
+      document.getElementById("sRevenue").textContent = `INR ${revenue.toLocaleString("en-IN")}`;
+    }
+
+    function refreshVisitorInsights() {
+      const analytics = getAnalytics();
+      const today = new Date().toISOString().slice(0, 10);
+      const uniqueVisitorMap = analytics.uniqueVisitors;
+      const uniqueIds = Object.keys(uniqueVisitorMap);
+      const returningCount = uniqueIds.filter((id) => Number(uniqueVisitorMap[id].visits || 0) > 1).length;
+
+      document.getElementById("vTotalVisits").textContent = String(analytics.totalVisits);
+      document.getElementById("vUniqueVisitors").textContent = String(uniqueIds.length);
+      document.getElementById("vTodayVisits").textContent = String(Number(analytics.dailyVisits[today] || 0));
+      document.getElementById("vReturning").textContent = String(returningCount);
+
+      const topPages = Object.entries(analytics.pageVisits)
+        .sort((a, b) => Number(b[1]) - Number(a[1]))
+        .slice(0, 4);
+      topPagesList.innerHTML = "";
+      if (!topPages.length) {
+        topPagesList.innerHTML = `<li>No page visit data yet.</li>`;
+      } else {
+        topPages.forEach(([page, count]) => {
+          const li = document.createElement("li");
+          li.textContent = `${page}: ${count} visits`;
+          topPagesList.appendChild(li);
+        });
+      }
+
+      const users = getUsers();
+      const bookings = getBookings();
+      const bookingByEmail = {};
+      bookings.forEach((b) => {
+        const key = String(b.email || "").toLowerCase();
+        if (!key) return;
+        bookingByEmail[key] = Number(bookingByEmail[key] || 0) + 1;
+      });
+
+      const usersWithBooking = users.filter((u) => bookingByEmail[String(u.email || "").toLowerCase()]).length;
+      let topBooker = "-";
+      let maxBookings = 0;
+      Object.keys(bookingByEmail).forEach((email) => {
+        const count = bookingByEmail[email];
+        if (count > maxBookings) {
+          maxBookings = count;
+          topBooker = `${email} (${count})`;
+        }
+      });
+
+      userInsightsList.innerHTML = "";
+      const snapshotItems = [
+        `Registered users: ${users.length}`,
+        `Users with booking: ${usersWithBooking}`,
+        `Top booking user: ${topBooker}`,
+        `Last visit recorded: ${formatDateTime(analytics.lastVisitAt)}`
+      ];
+      snapshotItems.forEach((text) => {
+        const li = document.createElement("li");
+        li.textContent = text;
+        userInsightsList.appendChild(li);
+      });
+    }
+
+    function renderBookings() {
+      const q = (searchInput.value || "").trim().toLowerCase();
+      const bookings = getBookings().filter((b) => {
+        const searchMatch =
+          !q ||
+          String(b.id || "").toLowerCase().includes(q) ||
+          String(b.guestName || "").toLowerCase().includes(q) ||
+          String(b.email || "").toLowerCase().includes(q);
+        return searchMatch;
+      });
+
+      bookingsPanel.innerHTML = "";
+      if (!bookings.length) {
+        bookingsPanel.innerHTML = `<div class="empty">No bookings found.</div>`;
+        return;
+      }
+
+      const sorted = [...bookings].sort((a, b) => String(b.id).localeCompare(String(a.id)));
+      sorted.forEach((b) => {
+        const paid = (b.paymentStatus || "").toLowerCase() === "paid";
+        const statusText = b.paymentStatus || "Pending";
+        const card = document.createElement("article");
+        card.className = "item";
+        card.innerHTML = `
+          <div class="item-top">
+            <p class="item-id">Booking ID: ${b.id || "-"}</p>
+            <span class="badge ${paid ? "paid" : "pending"}">${statusText}</span>
+          </div>
+          <div class="meta">
+            <p><strong>Name:</strong> ${b.guestName || "-"}</p>
+            <p><strong>Email:</strong> ${b.email || "-"}</p>
+            <p><strong>Room:</strong> ${b.roomType || "-"}</p>
+            <p><strong>Guests:</strong> ${b.guests || "-"}</p>
+            <p><strong>Check-in:</strong> ${b.checkIn || "-"}</p>
+            <p><strong>Check-out:</strong> ${b.checkOut || "-"}</p>
+            <p><strong>Nights:</strong> ${b.nights || "-"}</p>
+            <p><strong>Total:</strong> INR ${Number(b.total || 0).toLocaleString("en-IN")}</p>
+          </div>
+          <div class="actions">
+            <button class="btn edit" type="button" data-action="toggle-paid" data-id="${b.id || ""}">${paid ? "Mark Pending" : "Mark Paid"}</button>
+            <button class="btn danger" type="button" data-action="delete-booking" data-id="${b.id || ""}">Delete</button>
+          </div>
+        `;
+        bookingsPanel.appendChild(card);
+      });
+
+      bookingsPanel.querySelectorAll("button[data-action]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const action = btn.dataset.action;
+          const id = btn.dataset.id;
+          if (!id) return;
+          if (action === "toggle-paid") toggleBookingPayment(id);
+          if (action === "delete-booking") deleteBooking(id);
+        });
+      });
+    }
+
+    function renderUsers() {
+      const q = (searchInput.value || "").trim().toLowerCase();
+      const users = getUsers().filter((u) => {
+        if (!q) return true;
+        return String(u.name || "").toLowerCase().includes(q) || String(u.email || "").toLowerCase().includes(q);
+      });
+      usersPanel.innerHTML = "";
+      if (!users.length) {
+        usersPanel.innerHTML = `<div class="empty">No users found.</div>`;
+        return;
+      }
+
+      users.forEach((u, idx) => {
+        const card = document.createElement("article");
+        card.className = "item";
+        card.innerHTML = `
+          <div class="item-top">
+            <p class="item-id">${u.name || "-"} (${idx + 1})</p>
+          </div>
+          <div class="meta">
+            <p><strong>Email:</strong> ${u.email || "-"}</p>
+            <p><strong>Phone:</strong> ${u.phone || "-"}</p>
+            <p style="grid-column: 1 / -1;"><strong>Address:</strong> ${u.address || "-"}</p>
+          </div>
+          <div class="actions">
+            <button class="btn danger" type="button" data-action="delete-user" data-email="${u.email || ""}">Delete User</button>
+          </div>
+        `;
+        usersPanel.appendChild(card);
+      });
+
+      usersPanel.querySelectorAll("button[data-action='delete-user']").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const email = btn.dataset.email;
+          if (!email) return;
+          deleteUser(email);
+        });
+      });
+    }
+
+    function toggleBookingPayment(id) {
+      const all = getBookings();
+      const index = all.findIndex((b) => b.id === id);
+      if (index === -1) return;
+      const current = (all[index].paymentStatus || "").toLowerCase();
+      all[index].paymentStatus = current === "paid" ? "Pending" : "Paid";
+      localStorage.setItem("trishulBookings", JSON.stringify(all));
+      showMsg(adminMsg, "success", "Booking payment status updated.");
+      refreshAdminData();
+    }
+
+    function deleteBooking(id) {
+      openConfirmPopup("Delete this booking permanently?", () => {
+        const all = getBookings().filter((b) => b.id !== id);
+        localStorage.setItem("trishulBookings", JSON.stringify(all));
+        showMsg(adminMsg, "success", "Booking deleted successfully.");
+        refreshAdminData();
+      });
+    }
+
+    function deleteUser(email) {
+      openConfirmPopup("Delete this user account?", () => {
+        const users = getUsers().filter((u) => String(u.email || "").toLowerCase() !== String(email).toLowerCase());
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+        showMsg(adminMsg, "success", "User deleted successfully.");
+        refreshAdminData();
+      });
+    }
+
+    function exportBookings() {
+      const data = getBookings();
+      if (!data.length) {
+        showMsg(adminMsg, "error", "No bookings available to export.");
+        return;
+      }
+
+      const headers = [
+        "Booking ID",
+        "Guest Name",
+        "Phone",
+        "Email",
+        "Room Type",
+        "Guests",
+        "Check-in",
+        "Check-out",
+        "Nights",
+        "Offer Discount (%)",
+        "Total (INR)",
+        "Payment Status",
+        "Payment Method",
+        "Payment Date",
+        "Special Request"
+      ];
+
+      const escapeCsv = (value) => {
+        const text = String(value ?? "");
+        return `"${text.replace(/"/g, '""')}"`;
+      };
+
+      const rows = data.map((b) => [
+        b.id || "",
+        b.guestName || "",
+        b.phone || "",
+        b.email || "",
+        b.roomType || "",
+        b.guests || "",
+        b.checkIn || "",
+        b.checkOut || "",
+        b.nights || "",
+        b.offerDiscount || 0,
+        b.total || 0,
+        b.paymentStatus || "Pending",
+        b.paymentMethod || "",
+        b.paymentAt ? new Date(b.paymentAt).toLocaleString("en-IN") : "",
+        b.specialRequest || ""
+      ]);
+
+      const csv = [headers, ...rows].map((row) => row.map(escapeCsv).join(",")).join("\r\n");
+      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `trishul-bookings-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showMsg(adminMsg, "success", "Bookings exported in Excel format (.csv).");
+    }
+
+    function refreshAdminData() {
+      clearMsg(adminMsg);
+      refreshStats();
+      renderBookings();
+      renderUsers();
+      refreshVisitorInsights();
+    }
+
+    function switchPanel(panelId) {
+      panelTabs.forEach((tab) => {
+        tab.classList.toggle("active", tab.dataset.panel === panelId);
+      });
+      bookingsPanelWrap.style.display = panelId === "bookingsPanelWrap" ? "block" : "none";
+      usersPanelWrap.style.display = panelId === "usersPanelWrap" ? "block" : "none";
+    }
+
+    function adminLogin() {
+      clearMsg(adminLoginMsg);
+      const email = document.getElementById("adminEmail").value.trim().toLowerCase();
+      const password = document.getElementById("adminPassword").value;
+      if (!email || !password) {
+        showMsg(adminLoginMsg, "error", "Please email and password fill karein.");
+        return;
+      }
+      if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+        showMsg(adminLoginMsg, "error", "Invalid admin credentials.");
+        return;
+      }
+
+      localStorage.setItem("adminSession", JSON.stringify({ email, at: Date.now() }));
+      adminLoginView.style.display = "none";
+      adminDashboardView.style.display = "grid";
+      refreshAdminData();
+    }
+
+    function adminLogout() {
+      localStorage.removeItem("adminSession");
+      window.location.href = "index.html";
+    }
+
+    [searchInput].forEach((el) => {
+      el.addEventListener("input", refreshAdminData);
+      el.addEventListener("change", refreshAdminData);
+    });
+
+    panelTabs.forEach((tab) => {
+      tab.addEventListener("click", () => switchPanel(tab.dataset.panel));
+    });
+
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    document.querySelectorAll("nav#mainNav a").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    confirmPopup.addEventListener("click", (event) => {
+      if (event.target.id === "confirmPopup") closeConfirmPopup();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && confirmPopup.classList.contains("show")) {
+        closeConfirmPopup();
+      }
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+document.addEventListener("DOMContentLoaded", () => {
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      if (loggedInUser) {
+        userGreeting.style.display = "inline";
+        logoutLink.style.display = "inline";
+        userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
+        if (loginLink) loginLink.style.display = "none";
+      }
+
+      const adminSession = JSON.parse(localStorage.getItem("adminSession") || "null");
+      if (adminSession && adminSession.email === ADMIN_EMAIL) {
+        adminLoginView.style.display = "none";
+        adminDashboardView.style.display = "grid";
+        refreshAdminData();
+      }
+    });
+  
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
+</body>
+</html>
+

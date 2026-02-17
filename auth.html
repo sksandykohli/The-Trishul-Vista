@@ -1,0 +1,661 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login / Register | The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .auth-page {
+      min-height: 86vh;
+      display: grid;
+      place-items: center;
+      padding: 28px 16px 44px;
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+        url("images/o2.jpg") center/cover no-repeat fixed;
+    }
+
+    .auth-box {
+      width: min(520px, 96vw);
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(6px);
+      border-radius: 16px;
+      box-shadow: 0 24px 42px rgba(16, 42, 67, 0.18);
+      overflow: hidden;
+    }
+
+    .auth-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: #eef5fc;
+      border-bottom: 1px solid #dbe7f2;
+    }
+
+    .auth-tab {
+      border: 0;
+      padding: 14px 10px;
+      cursor: pointer;
+      font-weight: 800;
+      color: #355070;
+      background: transparent;
+      font-size: 0.98rem;
+    }
+
+    .auth-tab.active {
+      background: linear-gradient(135deg, #2e8abc, #1f6a9a);
+      color: #fff;
+    }
+
+    .auth-panel {
+      padding: 22px;
+      display: none;
+    }
+
+    .auth-panel.active {
+      display: block;
+    }
+
+    .auth-title {
+      margin: 0 0 14px;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: 1.55rem;
+      text-align: center;
+    }
+
+    .auth-field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .auth-field label {
+      color: #243b53;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .auth-field input {
+      border: 1px solid #d8e2ed;
+      border-radius: 8px;
+      padding: 11px 12px;
+      font: inherit;
+      color: #102a43;
+      background: #fdfefe;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .auth-field input:focus {
+      border-color: #2e8abc;
+      box-shadow: 0 0 0 3px rgba(46, 138, 188, 0.15);
+      background: #fff;
+      outline: none;
+    }
+
+    .auth-field input.input-error {
+      border-color: #d64545;
+      background: #fff8f8;
+    }
+
+    .auth-field textarea {
+      border: 1px solid #d8e2ed;
+      border-radius: 8px;
+      padding: 11px 12px;
+      font: inherit;
+      color: #102a43;
+      background: #fdfefe;
+      min-height: 82px;
+      resize: vertical;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    }
+
+    .auth-field textarea:focus {
+      border-color: #2e8abc;
+      box-shadow: 0 0 0 3px rgba(46, 138, 188, 0.15);
+      background: #fff;
+      outline: none;
+    }
+
+    .field-msg {
+      min-height: 16px;
+      margin: -2px 0 0 1px;
+      font-size: 0.8rem;
+      color: #c53030;
+      font-weight: 600;
+      visibility: hidden;
+    }
+
+    .field-msg.show {
+      visibility: visible;
+    }
+
+    .auth-submit {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #2e8abc, #1f6a9a);
+      color: #fff;
+      padding: 12px 14px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 4px;
+      box-shadow: 0 10px 20px rgba(31, 106, 154, 0.25);
+    }
+
+    .auth-msg {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .auth-msg.error {
+      display: block;
+      background: #fff1f0;
+      color: #9f1d1d;
+      border: 1px solid #ffc9c5;
+    }
+
+    .auth-msg.success {
+      display: block;
+      background: #edfdf4;
+      color: #0f6a3f;
+      border: 1px solid #bdeccc;
+    }
+
+    .auth-link-row {
+      margin-top: 8px;
+      text-align: right;
+    }
+
+    .auth-link-btn {
+      border: 0;
+      background: transparent;
+      color: #1f6a9a;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      text-decoration: underline;
+    }
+
+    .reset-box {
+      margin-top: 12px;
+      border: 1px solid #dce7f1;
+      border-radius: 10px;
+      padding: 12px;
+      background: #f9fcff;
+      display: none;
+    }
+
+    .reset-box.show {
+      display: block;
+    }
+
+    .reset-title {
+      margin: 0 0 10px 0;
+      color: #102a43;
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .reset-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 7000;
+      padding: 16px;
+    }
+
+    .reset-popup.show {
+      display: flex;
+    }
+
+    .reset-popup-box {
+      width: min(460px, 96vw);
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #dce7f1;
+      box-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
+      padding: 16px;
+      position: relative;
+    }
+
+    .reset-close {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      border: 0;
+      background: #eef3f8;
+      color: #355070;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="auth.html" id="loginLink" class="active">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-page">
+    <section class="auth-box">
+      <div class="auth-tabs">
+        <button class="auth-tab active" type="button" data-tab="loginPanel">Login</button>
+        <button class="auth-tab" type="button" data-tab="registerPanel">Register</button>
+      </div>
+
+      <div id="loginPanel" class="auth-panel active">
+        <h2 class="auth-title">Login</h2>
+        <form id="loginForm" novalidate>
+          <div class="auth-field">
+            <label for="loginEmail">Email</label>
+            <input id="loginEmail" type="email" required />
+            <p id="loginEmailMsg" class="field-msg"></p>
+          </div>
+          <div class="auth-field">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" required />
+            <p id="loginPasswordMsg" class="field-msg"></p>
+          </div>
+          <div class="auth-link-row">
+            <button type="button" class="auth-link-btn" id="forgotPasswordBtn">Forgot Password?</button>
+          </div>
+          <button class="auth-submit" type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+          <p id="loginMsg" class="auth-msg"></p>
+        </form>
+      </div>
+
+      <div id="registerPanel" class="auth-panel">
+        <h2 class="auth-title">Register</h2>
+        <form id="registerForm" novalidate>
+          <div class="auth-field">
+            <label for="registerName">Full Name</label>
+            <input id="registerName" type="text" required />
+          </div>
+          <div class="auth-field">
+            <label for="registerEmail">Email</label>
+            <input id="registerEmail" type="email" required />
+          </div>
+          <div class="auth-field">
+            <label for="registerPhone">Phone Number</label>
+            <input id="registerPhone" type="tel" pattern="[0-9]{10}" required />
+          </div>
+          <div class="auth-field">
+            <label for="registerAddress">Address</label>
+            <textarea id="registerAddress" required></textarea>
+          </div>
+          <div class="auth-field">
+            <label for="registerPassword">Password</label>
+            <input id="registerPassword" type="password" minlength="6" required />
+          </div>
+          <button class="auth-submit" type="submit"><i class="fas fa-user-plus"></i> Create Account</button>
+          <p id="registerMsg" class="auth-msg"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div id="resetPopup" class="reset-popup" aria-hidden="true">
+    <div class="reset-popup-box">
+      <button type="button" class="reset-close" onclick="closeResetPopup()"><i class="fas fa-times"></i></button>
+      <p class="reset-title">Reset / Recover Password</p>
+      <form id="resetForm" novalidate>
+        <div class="auth-field">
+          <label for="resetEmail">Registered Email</label>
+          <input id="resetEmail" type="email" required />
+        </div>
+        <div class="auth-field">
+          <label for="resetPhone">Registered Phone Number</label>
+          <input id="resetPhone" type="tel" pattern="[0-9]{10}" required />
+        </div>
+        <div class="auth-field">
+          <label for="newPassword">New Password</label>
+          <input id="newPassword" type="password" minlength="6" required />
+        </div>
+        <div class="auth-field">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input id="confirmPassword" type="password" minlength="6" required />
+        </div>
+        <button class="auth-submit" type="submit"><i class="fas fa-key"></i> Reset Password</button>
+        <p id="resetMsg" class="auth-msg"></p>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <p>Copyright 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <script>
+    const tabs = document.querySelectorAll(".auth-tab");
+    const panels = document.querySelectorAll(".auth-panel");
+    const ADMIN_EMAIL = "admin@trishulvista.com";
+    const ADMIN_PASSWORD = "Admin@123";
+
+    function showTab(tabId) {
+      tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === tabId));
+      panels.forEach((p) => p.classList.toggle("active", p.id === tabId));
+    }
+
+    tabs.forEach((tab) => tab.addEventListener("click", () => showTab(tab.dataset.tab)));
+
+    function showAuthMsg(el, type, text) {
+      el.className = `auth-msg ${type}`;
+      el.textContent = text;
+    }
+
+    function clearAuthMsg(el) {
+      el.className = "auth-msg";
+      el.textContent = "";
+    }
+
+    function setFieldError(inputEl, msgEl, message) {
+      inputEl.classList.add("input-error");
+      msgEl.textContent = message;
+      msgEl.classList.add("show");
+    }
+
+    function clearFieldError(inputEl, msgEl) {
+      inputEl.classList.remove("input-error");
+      msgEl.textContent = "";
+      msgEl.classList.remove("show");
+    }
+
+    document.getElementById("registerForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const msg = document.getElementById("registerMsg");
+      clearAuthMsg(msg);
+
+      const name = document.getElementById("registerName").value.trim();
+      const email = document.getElementById("registerEmail").value.trim().toLowerCase();
+      const phone = document.getElementById("registerPhone").value.trim();
+      const address = document.getElementById("registerAddress").value.trim();
+      const password = document.getElementById("registerPassword").value;
+
+      if (!name || !email || !phone || !address || password.length < 6) {
+        showAuthMsg(msg, "error", "Please sab details fill karein. Password minimum 6 characters.");
+        return;
+      }
+      if (!/^[0-9]{10}$/.test(phone)) {
+        showAuthMsg(msg, "error", "Valid 10-digit phone number enter karein.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      if (users.some((u) => u.email === email)) {
+        showAuthMsg(msg, "error", "Email already registered. Please login.");
+        return;
+      }
+
+      users.push({ name, email, phone, address, password });
+      localStorage.setItem("registeredUsers", JSON.stringify(users));
+      showAuthMsg(msg, "success", "Registration successful. Ab login karein.");
+      document.getElementById("registerForm").reset();
+      setTimeout(() => showTab("loginPanel"), 600);
+    });
+
+    document.getElementById("loginForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const msg = document.getElementById("loginMsg");
+      clearAuthMsg(msg);
+
+      const emailInput = document.getElementById("loginEmail");
+      const passwordInput = document.getElementById("loginPassword");
+      const emailMsg = document.getElementById("loginEmailMsg");
+      const passwordMsg = document.getElementById("loginPasswordMsg");
+
+      clearFieldError(emailInput, emailMsg);
+      clearFieldError(passwordInput, passwordMsg);
+
+      const email = emailInput.value.trim().toLowerCase();
+      const password = passwordInput.value;
+      let hasError = false;
+
+      if (!email) {
+        setFieldError(emailInput, emailMsg, "Email required hai.");
+        hasError = true;
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        setFieldError(emailInput, emailMsg, "Valid email enter karein.");
+        hasError = true;
+      }
+
+      if (!password) {
+        setFieldError(passwordInput, passwordMsg, "Password required hai.");
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+        localStorage.setItem("adminSession", JSON.stringify({ email: ADMIN_EMAIL, at: Date.now() }));
+        showAuthMsg(msg, "success", "Admin login successful. Redirecting...");
+        setTimeout(() => {
+          window.location.href = "admin.html";
+        }, 650);
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const user = users.find((u) => u.email === email && u.password === password);
+
+      if (!user) {
+        setFieldError(passwordInput, passwordMsg, "Invalid email or password.");
+        return;
+      }
+
+      localStorage.setItem("loggedInUser", JSON.stringify({ name: user.name, email: user.email }));
+      showAuthMsg(msg, "success", "Login successful. Redirecting to home...");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 800);
+    });
+
+    ["loginEmail", "loginPassword"].forEach((id) => {
+      const input = document.getElementById(id);
+      const msg = document.getElementById(`${id}Msg`);
+      input.addEventListener("input", () => clearFieldError(input, msg));
+    });
+
+    const forgotPasswordBtn = document.getElementById("forgotPasswordBtn");
+    const resetPopup = document.getElementById("resetPopup");
+
+    function openResetPopup() {
+      const resetMsg = document.getElementById("resetMsg");
+      clearAuthMsg(resetMsg);
+      document.getElementById("resetForm").reset();
+      resetPopup.classList.add("show");
+      resetPopup.setAttribute("aria-hidden", "false");
+      document.getElementById("resetEmail").focus();
+    }
+
+    function closeResetPopup() {
+      resetPopup.classList.remove("show");
+      resetPopup.setAttribute("aria-hidden", "true");
+    }
+
+    forgotPasswordBtn.addEventListener("click", openResetPopup);
+    resetPopup.addEventListener("click", (event) => {
+      if (event.target.id === "resetPopup") closeResetPopup();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && resetPopup.classList.contains("show")) {
+        closeResetPopup();
+      }
+    });
+
+    window.closeResetPopup = closeResetPopup;
+
+    document.getElementById("resetForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const resetMsg = document.getElementById("resetMsg");
+      clearAuthMsg(resetMsg);
+
+      const email = document.getElementById("resetEmail").value.trim().toLowerCase();
+      const phone = document.getElementById("resetPhone").value.trim();
+      const newPassword = document.getElementById("newPassword").value;
+      const confirmPassword = document.getElementById("confirmPassword").value;
+
+      if (!email || !phone || !newPassword || !confirmPassword) {
+        showAuthMsg(resetMsg, "error", "Please sab fields fill karein.");
+        return;
+      }
+      if (!/^[0-9]{10}$/.test(phone)) {
+        showAuthMsg(resetMsg, "error", "Valid 10-digit phone number enter karein.");
+        return;
+      }
+      if (newPassword.length < 6) {
+        showAuthMsg(resetMsg, "error", "New password minimum 6 characters ka hona chahiye.");
+        return;
+      }
+      if (newPassword !== confirmPassword) {
+        showAuthMsg(resetMsg, "error", "New password aur confirm password match nahi kar rahe.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const userIndex = users.findIndex((u) => u.email === email && (u.phone || "") === phone);
+      if (userIndex === -1) {
+        showAuthMsg(resetMsg, "error", "Email + phone combination match nahi hua.");
+        return;
+      }
+
+      users[userIndex].password = newPassword;
+      localStorage.setItem("registeredUsers", JSON.stringify(users));
+      showAuthMsg(resetMsg, "success", "Password reset successful. Ab naye password se login karein.");
+      setTimeout(() => {
+        closeResetPopup();
+      }, 700);
+    });
+
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    document.querySelectorAll("nav#mainNav a").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      const registerLink = document.getElementById("registerLink");
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+      if (loggedInUser) {
+        userGreeting.style.display = "inline";
+        logoutLink.style.display = "inline";
+        userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
+        if (loginLink) loginLink.style.display = "none";
+        if (registerLink) registerLink.style.display = "none";
+      }
+    });
+
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
+</body>
+</html>
+
+

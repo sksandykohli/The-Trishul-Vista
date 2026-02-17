@@ -1,0 +1,607 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard | The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .dash-page {
+      min-height: 86vh;
+      padding: 28px 16px 46px;
+      background:
+        radial-gradient(circle at 12% 10%, rgba(46, 138, 188, 0.18), transparent 35%),
+        radial-gradient(circle at 90% 80%, rgba(255, 153, 0, 0.16), transparent 34%),
+        linear-gradient(135deg, #eef4ff 0%, #fff7eb 100%);
+    }
+
+    .dash-shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .dash-header {
+      background: #fff;
+      border: 1px solid #dde8f2;
+      border-radius: 14px;
+      box-shadow: 0 14px 28px rgba(16, 42, 67, 0.12);
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .dash-title {
+      margin: 0;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: clamp(1.3rem, 3vw, 2rem);
+    }
+
+    .dash-sub {
+      margin: 4px 0 0 0;
+      color: #486581;
+      font-size: 0.95rem;
+    }
+
+    .dash-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .dash-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dash-btn.primary {
+      background: #2e8abc;
+      color: #fff;
+    }
+
+    .dash-btn.secondary {
+      background: #eef3f8;
+      color: #2f4e6f;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #dfeaf4;
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 8px 18px rgba(16, 42, 67, 0.09);
+    }
+
+    .stat-label {
+      margin: 0;
+      color: #627d98;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .stat-value {
+      margin: 6px 0 0 0;
+      color: #102a43;
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+
+    .bookings-wrap {
+      background: #fff;
+      border: 1px solid #dfeaf4;
+      border-radius: 14px;
+      box-shadow: 0 12px 24px rgba(16, 42, 67, 0.1);
+      padding: 16px;
+    }
+
+    .bookings-title {
+      margin: 0 0 12px;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+    }
+
+    .booking-item {
+      border: 1px solid #e0ebf5;
+      border-radius: 10px;
+      padding: 12px;
+      margin-bottom: 10px;
+      display: grid;
+      gap: 8px;
+      background: #fbfdff;
+    }
+
+    .booking-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .booking-id {
+      margin: 0;
+      color: #486581;
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .badge {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .badge.paid {
+      background: #edfdf4;
+      color: #0f6a3f;
+      border: 1px solid #bdeccc;
+    }
+
+    .badge.pending {
+      background: #fff7e8;
+      color: #9a6700;
+      border: 1px solid #ffe0aa;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      color: #334e68;
+      font-size: 0.88rem;
+    }
+
+    .booking-actions {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .cancel-btn {
+      border: 0;
+      border-radius: 7px;
+      background: #e64949;
+      color: #fff;
+      padding: 8px 12px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .empty-box {
+      text-align: center;
+      color: #627d98;
+      padding: 26px 10px;
+      border: 1px dashed #cfdeed;
+      border-radius: 10px;
+      background: #f9fbfe;
+    }
+
+    .dash-msg {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .dash-msg.success {
+      display: block;
+      background: #edfdf4;
+      color: #0f6a3f;
+      border: 1px solid #bdeccc;
+    }
+
+    .dash-msg.error {
+      display: block;
+      background: #fff1f0;
+      color: #9f1d1d;
+      border: 1px solid #ffc9c5;
+    }
+
+    .confirm-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.56);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 7000;
+    }
+
+    .confirm-popup.show {
+      display: flex;
+    }
+
+    .confirm-box {
+      width: min(430px, 94vw);
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #dfeaf4;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
+      padding: 18px;
+    }
+
+    .confirm-box h4 {
+      margin: 0 0 8px 0;
+      color: #102a43;
+      font-size: 1.1rem;
+    }
+
+    .confirm-box p {
+      margin: 0 0 14px 0;
+      color: #486581;
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .confirm-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .confirm-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .confirm-btn.keep {
+      background: #eef3f8;
+      color: #2f4e6f;
+    }
+
+    .confirm-btn.delete {
+      background: #e64949;
+      color: #fff;
+    }
+
+    @media (max-width: 980px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .booking-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      .booking-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="booking.html">Booking</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="auth.html" id="loginLink">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="dash-page">
+    <section class="dash-shell">
+      <div class="dash-header">
+        <div>
+          <h2 class="dash-title">My Dashboard</h2>
+          <p class="dash-sub" id="welcomeText">Welcome</p>
+        </div>
+        <div class="dash-actions">
+          <a class="dash-btn primary" href="booking.html"><i class="fas fa-calendar-plus"></i> New Booking</a>
+          <button class="dash-btn secondary" type="button" onclick="refreshDashboard()"><i class="fas fa-rotate-right"></i> Refresh</button>
+        </div>
+      </div>
+
+      <div class="stats-grid">
+        <article class="stat-card">
+          <p class="stat-label">Total Bookings</p>
+          <p class="stat-value" id="statTotal">0</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Upcoming Stays</p>
+          <p class="stat-value" id="statUpcoming">0</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Paid Bookings</p>
+          <p class="stat-value" id="statPaid">0</p>
+        </article>
+        <article class="stat-card">
+          <p class="stat-label">Total Spent</p>
+          <p class="stat-value" id="statSpent">INR 0</p>
+        </article>
+      </div>
+
+      <div class="bookings-wrap">
+        <h3 class="bookings-title">My Bookings</h3>
+        <div id="bookingsList"></div>
+        <p id="dashMsg" class="dash-msg"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Copyright 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <div id="cancelPopup" class="confirm-popup" aria-hidden="true">
+    <div class="confirm-box">
+      <h4>Cancel Booking</h4>
+      <p>Are you sure you want to cancel this booking?</p>
+      <div class="confirm-actions">
+        <button type="button" class="confirm-btn keep" onclick="closeCancelPopup()">Keep Booking</button>
+        <button type="button" class="confirm-btn delete" onclick="confirmCancelBooking()">Yes, Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bookingsList = document.getElementById("bookingsList");
+    const dashMsg = document.getElementById("dashMsg");
+    const cancelPopup = document.getElementById("cancelPopup");
+    let currentUser = null;
+    let pendingCancelBookingId = null;
+
+    function showDashMsg(type, text) {
+      dashMsg.className = `dash-msg ${type}`;
+      dashMsg.textContent = text;
+    }
+
+    function clearDashMsg() {
+      dashMsg.className = "dash-msg";
+      dashMsg.textContent = "";
+    }
+
+    function parseDate(dateStr) {
+      return new Date(`${dateStr}T00:00:00`);
+    }
+
+    function getUserBookings() {
+      const allBookings = JSON.parse(localStorage.getItem("trishulBookings") || "[]");
+      if (!currentUser?.email) return [];
+      return allBookings.filter((b) => (b.email || "").toLowerCase() === currentUser.email.toLowerCase());
+    }
+
+    function refreshStats(bookings) {
+      const today = new Date();
+      const upcoming = bookings.filter((b) => parseDate(b.checkIn) >= new Date(today.toDateString())).length;
+      const paid = bookings.filter((b) => (b.paymentStatus || "").toLowerCase() === "paid").length;
+      const spent = bookings.reduce((sum, b) => sum + Number(b.total || 0), 0);
+
+      document.getElementById("statTotal").textContent = String(bookings.length);
+      document.getElementById("statUpcoming").textContent = String(upcoming);
+      document.getElementById("statPaid").textContent = String(paid);
+      document.getElementById("statSpent").textContent = `INR ${spent.toLocaleString("en-IN")}`;
+    }
+
+    function renderBookings(bookings) {
+      bookingsList.innerHTML = "";
+      if (!bookings.length) {
+        bookingsList.innerHTML = `<div class="empty-box"><i class="fas fa-calendar-xmark"></i><p>No bookings found for your account.</p></div>`;
+        return;
+      }
+
+      const sorted = [...bookings].sort((a, b) => parseDate(b.checkIn) - parseDate(a.checkIn));
+      sorted.forEach((b) => {
+        const status = (b.paymentStatus || "Pending").toLowerCase();
+        const item = document.createElement("article");
+        item.className = "booking-item";
+        item.innerHTML = `
+          <div class="booking-top">
+            <p class="booking-id">Booking ID: ${b.id || "-"}</p>
+            <span class="badge ${status === "paid" ? "paid" : "pending"}">${status === "paid" ? "Paid" : "Pending"}</span>
+          </div>
+          <div class="booking-grid">
+            <p><strong>Room:</strong> ${b.roomType || "-"}</p>
+            <p><strong>Guests:</strong> ${b.guests || "-"}</p>
+            <p><strong>Nights:</strong> ${b.nights || "-"}</p>
+            <p><strong>Check-in:</strong> ${b.checkIn || "-"}</p>
+            <p><strong>Check-out:</strong> ${b.checkOut || "-"}</p>
+            <p><strong>Total:</strong> INR ${Number(b.total || 0).toLocaleString("en-IN")}</p>
+          </div>
+          <div class="booking-actions">
+            <button type="button" class="cancel-btn" data-id="${b.id || ""}"><i class="fas fa-xmark"></i> Cancel Booking</button>
+          </div>
+        `;
+        bookingsList.appendChild(item);
+      });
+
+      document.querySelectorAll(".cancel-btn").forEach((btn) => {
+        btn.addEventListener("click", () => cancelBooking(btn.dataset.id));
+      });
+    }
+
+    function cancelBooking(bookingId) {
+      if (!bookingId) return;
+      pendingCancelBookingId = bookingId;
+      cancelPopup.classList.add("show");
+      cancelPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function closeCancelPopup() {
+      pendingCancelBookingId = null;
+      cancelPopup.classList.remove("show");
+      cancelPopup.setAttribute("aria-hidden", "true");
+    }
+
+    function confirmCancelBooking() {
+      const bookingId = pendingCancelBookingId;
+      if (!bookingId) {
+        closeCancelPopup();
+        return;
+      }
+
+      const allBookings = JSON.parse(localStorage.getItem("trishulBookings") || "[]");
+      const updated = allBookings.filter((b) => b.id !== bookingId);
+      localStorage.setItem("trishulBookings", JSON.stringify(updated));
+      closeCancelPopup();
+      showDashMsg("success", "Booking cancelled successfully.");
+      refreshDashboard();
+    }
+
+    cancelPopup.addEventListener("click", (event) => {
+      if (event.target.id === "cancelPopup") closeCancelPopup();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && cancelPopup.classList.contains("show")) {
+        closeCancelPopup();
+      }
+    });
+
+    function refreshDashboard() {
+      clearDashMsg();
+      const bookings = getUserBookings();
+      refreshStats(bookings);
+      renderBookings(bookings);
+    }
+
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    document.querySelectorAll("nav#mainNav a").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      currentUser = JSON.parse(localStorage.getItem("loggedInUser"));
+      if (!currentUser) {
+        window.location.href = "auth.html";
+        return;
+      }
+
+      document.getElementById("welcomeText").textContent = `Welcome, ${currentUser.name}`;
+
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      userGreeting.style.display = "inline";
+      logoutLink.style.display = "inline";
+      userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${currentUser.name}</a>`;
+      if (loginLink) loginLink.style.display = "none";
+
+      refreshDashboard();
+    });
+
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
+</body>
+</html>
+
+

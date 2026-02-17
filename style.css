@@ -1446,6 +1446,43 @@ body.menu-open {
   text-decoration: none;
 }
 
+#userGreeting i {
+  margin-right: 6px;
+  color: #fff !important;
+}
+
+nav ul li i {
+  color: #fff;
+}
+
+@media (min-width: 769px) {
+  nav ul {
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  nav ul li {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  #userGreeting {
+    white-space: nowrap;
+    max-width: 230px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  #userGreeting a {
+    display: inline-block;
+    max-width: 195px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    vertical-align: middle;
+  }
+}
+
 #logoutLink {
   display: none;
 }

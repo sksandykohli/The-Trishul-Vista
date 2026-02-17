@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rooms List | The Trishul Vista</title>
+  <title>The Trishul Vista</title>
   <link rel="stylesheet" href="style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <style>
@@ -405,8 +405,7 @@
           <li><a href="booking.html">Booking</a></li>
           <li><a href="gallery.html">Gallery</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li><a href="register.html" id="registerLink">Register</a></li>
-          <li><a href="login.html" id="loginLink">Login</a></li>
+          <li><a href="auth.html" id="loginLink">Login</a></li>
           <li id="userGreeting"></li>
           <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
         </ul>
@@ -468,7 +467,7 @@
       <!-- room 3 -->
       <article class="room-row">
         <div class="room-row-image">
-          <img src="Rooms/1-1.jpg" alt="Serenity Classic Suite" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 8,500 Book for 5 Days', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '50% OFF Special Offer')" style="cursor: pointer;" />
+          <img src="Rooms/1-1.jpg" alt="Serenity Classic Suite" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 8,750 Book for 5 Days', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '50% OFF Special Offer')" style="cursor: pointer;" />
           <p class="image-offer-tag">Special Offer: 50% OFF</p>
         </div>
         <div class="room-row-main">
@@ -484,10 +483,10 @@
         </div>
         <div class="room-row-side">
           <i class="fas fa-user guest-icon" aria-hidden="true"></i>
-          <p class="room-price">&#8377; 8,500</p>
+          <p class="room-price">&#8377; 8,750</p>
           <p class="price-subtext">Book 5 Day</p>
           <hr class="side-divider" />
-          <button class="details-btn" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 8,500 Book for 5 Days', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '50% OFF Special Offer')">Details</button>
+          <button class="details-btn" onclick="openQuickView('serenity', 'Serenity Classic Suite', '&#8377; 8,750 Book for 5 Days', 'A peaceful escape designed with classic elegance and cozy comfort for a truly relaxing stay.', ['Free Wi-Fi', 'Attached bathroom', 'Mountain-facing balcony', 'Food add-on: &#8377;300 per person per day', 'Maximum occupancy: 3 persons'], '50% OFF Special Offer')">Details</button>
         </div>
       </article>
 
@@ -697,6 +696,44 @@
       if (event.key === "ArrowLeft") changeQuickViewImage(-1);
       if (event.key === "ArrowRight") changeQuickViewImage(1);
     });
-  </script>
+
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
 </body>
 </html>
+
+

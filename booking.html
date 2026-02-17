@@ -1,0 +1,1021 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Booking | The Trishul Vista</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .booking-page {
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+        url("images/o1.jpg") center/cover no-repeat fixed;
+      min-height: 88vh;
+      padding: 36px 16px 54px;
+    }
+
+    .booking-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 18px 36px rgba(0, 0, 0, 0.14);
+      padding: 26px;
+    }
+
+    .booking-title {
+      text-align: center;
+      color: #102a43;
+      font-family: Georgia, serif;
+      margin-bottom: 8px;
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
+    }
+
+    .booking-subtitle {
+      text-align: center;
+      color: #486581;
+      margin-bottom: 22px;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .field label {
+      color: #243b53;
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select,
+    .field textarea {
+      padding: 11px 12px;
+      border: 1px solid #d7e1eb;
+      border-radius: 8px;
+      font: inherit;
+      color: #102a43;
+      background: #fff;
+    }
+
+    .field textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .booking-summary-box {
+      margin-top: 8px;
+      background: #f8fbff;
+      border: 1px solid #dce8f5;
+      border-radius: 10px;
+      padding: 14px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      color: #334e68;
+      font-size: 0.94rem;
+    }
+
+    .summary-line.total {
+      font-weight: 800;
+      color: #0b3a67;
+      font-size: 1rem;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      display: none;
+    }
+
+    .status-msg.error {
+      display: block;
+      background: #fff1f0;
+      color: #9f1d1d;
+      border: 1px solid #ffc9c5;
+    }
+
+    .status-msg.success {
+      display: block;
+      background: #edfdf4;
+      color: #0f6a3f;
+      border: 1px solid #bdeccc;
+    }
+
+    .availability-badge {
+      margin-top: 4px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #205493;
+    }
+
+    .book-btn {
+      margin-top: 14px;
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      background: #2e8abc;
+      color: #fff;
+      font-weight: 700;
+      padding: 13px 16px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .book-btn:hover {
+      background: #2177a6;
+    }
+
+    .availability-calendar {
+      margin: 6px 0 12px;
+      border: 1px solid #dce8f5;
+      border-radius: 10px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .availability-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      gap: 10px;
+    }
+
+    .month-nav-btn {
+      border: 1px solid #cdd9e6;
+      background: #fff;
+      color: #243b53;
+      border-radius: 8px;
+      width: 34px;
+      height: 34px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .month-label {
+      margin: 0;
+      color: #102a43;
+      font-size: 1rem;
+      font-weight: 800;
+      text-align: center;
+      flex: 1;
+    }
+
+    .availability-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: #486581;
+      margin-bottom: 10px;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .legend-dot.green { background: #1f9d55; }
+    .legend-dot.red { background: #d64545; }
+    .legend-dot.gray { background: #8fa3b8; }
+
+    .availability-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+
+    .day-header {
+      text-align: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #627d98;
+      padding-bottom: 4px;
+    }
+
+    .day-cell {
+      border: 1px solid #deebf7;
+      border-radius: 8px;
+      min-height: 44px;
+      background: #fff;
+      color: #243b53;
+      position: relative;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .day-cell.empty {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .day-cell.past {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .day-number {
+      position: absolute;
+      top: 6px;
+      left: 7px;
+      line-height: 1;
+    }
+
+    .day-dot {
+      position: absolute;
+      right: 7px;
+      bottom: 7px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .day-dot.available { background: #1f9d55; }
+    .day-dot.booked { background: #d64545; }
+    .day-dot.unknown { background: #8fa3b8; }
+
+    .day-cell.selected-start,
+    .day-cell.selected-end {
+      border-color: #2e8abc;
+      box-shadow: inset 0 0 0 2px #2e8abc;
+    }
+
+    .day-cell.in-range {
+      background: #eef8ff;
+      border-color: #b9ddf2;
+    }
+
+    .payment-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.62);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 6000;
+    }
+
+    .payment-popup.show {
+      display: flex;
+    }
+
+    .payment-box {
+      width: min(520px, 96vw);
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
+    }
+
+    .payment-box h3 {
+      margin: 0 0 10px;
+      color: #102a43;
+      font-family: Georgia, serif;
+      font-size: 1.4rem;
+    }
+
+    .payment-total {
+      margin: 0 0 14px;
+      color: #1f6a9a;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .upi-qr-wrap {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .upi-qr-wrap img {
+      width: 220px;
+      height: 220px;
+      border-radius: 10px;
+      border: 1px solid #dce6f0;
+      background: #fff;
+      padding: 8px;
+    }
+
+    .upi-note {
+      margin: 0;
+      color: #486581;
+      font-size: 0.9rem;
+      text-align: center;
+    }
+
+    .payment-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+    }
+
+    .payment-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 11px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.95rem;
+    }
+
+    .payment-btn.cancel {
+      background: #eef2f6;
+      color: #334e68;
+    }
+
+    .payment-btn.pay {
+      background: #2e8abc;
+      color: #fff;
+    }
+
+    @media (max-width: 760px) {
+      .booking-wrap {
+        padding: 18px;
+      }
+
+      .booking-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-wrapper">
+      <div class="header-logo-group">
+        <img src="images/logo.png" alt="The Trishul Vista Logo" />
+        <div>
+          <h1>The Trishul Vista</h1>
+          <p>Serenity Amongst Mountain's</p>
+        </div>
+      </div>
+
+      <div class="hamburger" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+      </div>
+      <nav id="mainNav">
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="aboutus.html">About Us</a></li>
+          <li><a href="rooms.html">Rooms</a></li>
+          <li><a href="booking.html" class="active">Booking</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="auth.html" id="loginLink">Login</a></li>
+          <li id="userGreeting"></li>
+          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="booking-page">
+    <section class="booking-wrap">
+      <h2 class="booking-title">Book Your Stay</h2>
+      <p class="booking-subtitle">Past date booking allowed nahi hai. Room already booked hua to auto block ho jayega.</p>
+
+      <form id="bookingForm" novalidate>
+        <div class="booking-grid">
+          <div class="field">
+            <label for="guestName">Guest Name</label>
+            <input id="guestName" name="guestName" type="text" required />
+          </div>
+          <div class="field">
+            <label for="phone">Phone Number</label>
+            <input id="phone" name="phone" type="tel" pattern="[0-9]{10}" required />
+          </div>
+        </div>
+
+        <div class="booking-grid">
+          <div class="field">
+            <label for="email">Email Address</label>
+            <input id="email" name="email" type="email" required />
+          </div>
+          <div class="field">
+            <label for="roomType">Room Type</label>
+            <select id="roomType" name="roomType" required>
+              <option value="">Select Room</option>
+              <option value="Serenity Classic Suite">Serenity Classic Suite (INR 3,500/night)</option>
+              <option value="Pinewood Attic Suite">Pinewood Attic Suite (INR 5,000/night)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="booking-grid">
+          <div class="field">
+            <label for="guests">No. of Guests</label>
+            <select id="guests" name="guests" required>
+              <option value="">Select Guests</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="booking-grid">
+          <div class="field">
+            <label for="checkIn">Check-in Date</label>
+            <input id="checkIn" name="checkIn" type="date" required />
+          </div>
+          <div class="field">
+            <label for="checkOut">Check-out Date</label>
+            <input id="checkOut" name="checkOut" type="date" required />
+          </div>
+        </div>
+
+        <div class="availability-calendar">
+          <div class="availability-head">
+            <button type="button" class="month-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+            <p class="month-label" id="availabilityMonthLabel">Availability</p>
+            <button type="button" class="month-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+          </div>
+          <div class="availability-legend">
+            <span class="legend-item"><span class="legend-dot green"></span> Available</span>
+            <span class="legend-item"><span class="legend-dot red"></span> Booked</span>
+            <span class="legend-item"><span class="legend-dot gray"></span> Select room first</span>
+          </div>
+          <div id="availabilityGrid" class="availability-grid"></div>
+        </div>
+
+        <div class="field">
+          <label for="specialRequest">Special Request</label>
+          <textarea id="specialRequest" name="specialRequest" placeholder="Any request? (optional)"></textarea>
+          <p id="availabilityBadge" class="availability-badge"></p>
+        </div>
+
+        <div class="booking-summary-box">
+          <p class="summary-line"><span>Room Charge</span><span id="roomCharge">INR 0</span></p>
+          <p class="summary-line"><span>Offer Discount</span><span id="offerDiscount">0%</span></p>
+          <p class="summary-line"><span>Nights</span><span id="nightCount">0</span></p>
+          <p class="summary-line total"><span>Total Amount</span><span id="totalAmount">INR 0</span></p>
+        </div>
+
+        <p id="statusMsg" class="status-msg"></p>
+        <button class="book-btn" type="submit"><i class="fas fa-calendar-check"></i> Confirm Booking</button>
+      </form>
+    </section>
+  </main>
+
+  <div id="paymentPopup" class="payment-popup" aria-hidden="true">
+    <div class="payment-box">
+      <h3>Complete Payment</h3>
+      <p class="payment-total">Payable Amount: <span id="popupPayableAmount">INR 0</span></p>
+
+      <div class="upi-qr-wrap">
+        <img id="upiQrImage" src="" alt="UPI QR Code" />
+        <p class="upi-note">UPI QR scan karein ya Open UPI App button use karein.</p>
+      </div>
+
+      <p id="paymentStatus" class="status-msg"></p>
+      <div class="payment-actions">
+        <button type="button" class="payment-btn cancel" onclick="closePaymentPopup()">Cancel</button>
+        <button type="button" class="payment-btn pay" onclick="openUpiApp()">Open UPI App</button>
+        <button type="button" class="payment-btn pay" onclick="markPaymentDone()">I Have Paid</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Copyright 2025 The Trishul Vista | All rights reserved.</p>
+  </footer>
+
+  <script>
+    const roomRates = {
+      "Serenity Classic Suite": 3500,
+      "Pinewood Attic Suite": 5000
+    };
+    const PAYMENT_CONFIG = {
+      upiVPA: "YOUR_UPI_ID@bank",
+      upiPayeeName: "The Trishul Vista"
+    };
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const prefilledRoom = urlParams.get("room");
+    const prefilledDays = Number(urlParams.get("days")) || 0;
+    const prefilledDiscount = Number(urlParams.get("discount")) || 0;
+
+    const bookingForm = document.getElementById("bookingForm");
+    const roomType = document.getElementById("roomType");
+    const guests = document.getElementById("guests");
+    const checkIn = document.getElementById("checkIn");
+    const checkOut = document.getElementById("checkOut");
+    const availabilityBadge = document.getElementById("availabilityBadge");
+    const statusMsg = document.getElementById("statusMsg");
+    const paymentPopup = document.getElementById("paymentPopup");
+    const popupPayableAmount = document.getElementById("popupPayableAmount");
+    const paymentStatus = document.getElementById("paymentStatus");
+    const upiQrImage = document.getElementById("upiQrImage");
+    const availabilityMonthLabel = document.getElementById("availabilityMonthLabel");
+    const availabilityGrid = document.getElementById("availabilityGrid");
+    const prevMonthBtn = document.getElementById("prevMonthBtn");
+    const nextMonthBtn = document.getElementById("nextMonthBtn");
+    let pendingBooking = null;
+    let availabilityMonth = new Date();
+
+    function getTodayYMD() {
+      const d = new Date();
+      const month = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${d.getFullYear()}-${month}-${day}`;
+    }
+
+    function parseDate(dateStr) {
+      return new Date(`${dateStr}T00:00:00`);
+    }
+
+    function toYMD(dateObj) {
+      const y = dateObj.getFullYear();
+      const m = String(dateObj.getMonth() + 1).padStart(2, "0");
+      const d = String(dateObj.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function getNights() {
+      if (!checkIn.value || !checkOut.value) return 0;
+      const inDate = parseDate(checkIn.value);
+      const outDate = parseDate(checkOut.value);
+      const diff = (outDate - inDate) / (1000 * 60 * 60 * 24);
+      return diff > 0 ? diff : 0;
+    }
+
+    function getOfferDiscountByNights(nights) {
+      if (nights >= 5 && nights <= 9) return 50;
+      if (nights >= 10 && nights <= 29) return 55;
+      if (nights >= 30) return 65;
+      return 0;
+    }
+
+    function rangesOverlap(startA, endA, startB, endB) {
+      return startA < endB && startB < endA;
+    }
+
+    function getBookings() {
+      return JSON.parse(localStorage.getItem("trishulBookings") || "[]");
+    }
+
+    function findConflict(selectedRoom, inDate, outDate) {
+      const all = getBookings();
+      return all.find((b) => {
+        if (b.roomType !== selectedRoom) return false;
+        return rangesOverlap(inDate, outDate, parseDate(b.checkIn), parseDate(b.checkOut));
+      });
+    }
+
+    function isDateBooked(selectedRoom, dateObj) {
+      if (!selectedRoom) return false;
+      const all = getBookings();
+      return all.some((b) => {
+        if (b.roomType !== selectedRoom) return false;
+        const start = parseDate(b.checkIn);
+        const end = parseDate(b.checkOut);
+        return dateObj >= start && dateObj < end;
+      });
+    }
+
+    function renderAvailabilityCalendar() {
+      const month = availabilityMonth.getMonth();
+      const year = availabilityMonth.getFullYear();
+      availabilityMonthLabel.textContent = new Date(year, month, 1).toLocaleString("en-IN", {
+        month: "long",
+        year: "numeric"
+      });
+
+      availabilityGrid.innerHTML = "";
+      const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+      weekDays.forEach((d) => {
+        const el = document.createElement("div");
+        el.className = "day-header";
+        el.textContent = d;
+        availabilityGrid.appendChild(el);
+      });
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const today = parseDate(getTodayYMD());
+
+      for (let i = 0; i < firstDay; i++) {
+        const empty = document.createElement("button");
+        empty.type = "button";
+        empty.className = "day-cell empty";
+        availabilityGrid.appendChild(empty);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateObj = new Date(year, month, day);
+        const ymd = toYMD(dateObj);
+        const selectedRoom = roomType.value;
+        const booked = selectedRoom ? isDateBooked(selectedRoom, dateObj) : false;
+        const isPast = dateObj < today;
+
+        const cell = document.createElement("button");
+        cell.type = "button";
+        cell.className = "day-cell";
+        if (isPast) cell.classList.add("past");
+        if (checkIn.value === ymd) cell.classList.add("selected-start");
+        if (checkOut.value === ymd) cell.classList.add("selected-end");
+        if (checkIn.value && checkOut.value && ymd > checkIn.value && ymd < checkOut.value) {
+          cell.classList.add("in-range");
+        }
+
+        const num = document.createElement("span");
+        num.className = "day-number";
+        num.textContent = String(day);
+        cell.appendChild(num);
+
+        const dot = document.createElement("span");
+        dot.className = `day-dot ${selectedRoom ? (booked ? "booked" : "available") : "unknown"}`;
+        cell.appendChild(dot);
+
+        cell.addEventListener("click", () => {
+          if (isPast) return;
+          if (!roomType.value) {
+            showStatus("error", "Pehle room select karein, fir date choose karein.");
+            return;
+          }
+          clearStatus();
+          if (!checkIn.value || (checkIn.value && checkOut.value)) {
+            checkIn.value = ymd;
+            checkOut.value = "";
+          } else if (ymd <= checkIn.value) {
+            checkIn.value = ymd;
+          } else {
+            checkOut.value = ymd;
+          }
+          checkOut.min = checkIn.value || getTodayYMD();
+          updateSummary();
+          validateAvailability();
+          renderAvailabilityCalendar();
+        });
+
+        availabilityGrid.appendChild(cell);
+      }
+    }
+
+    function showStatus(type, text) {
+      statusMsg.className = `status-msg ${type}`;
+      statusMsg.textContent = text;
+    }
+
+    function clearStatus() {
+      statusMsg.className = "status-msg";
+      statusMsg.textContent = "";
+    }
+
+    function showPaymentStatus(type, text) {
+      paymentStatus.className = `status-msg ${type}`;
+      paymentStatus.textContent = text;
+    }
+
+    function clearPaymentStatus() {
+      paymentStatus.className = "status-msg";
+      paymentStatus.textContent = "";
+    }
+
+    function buildUpiUrl(amount, bookingId) {
+      return `upi://pay?pa=${encodeURIComponent(PAYMENT_CONFIG.upiVPA)}&pn=${encodeURIComponent(PAYMENT_CONFIG.upiPayeeName)}&am=${encodeURIComponent(amount.toFixed(2))}&cu=INR&tn=${encodeURIComponent("Booking " + bookingId)}`;
+    }
+
+    function openPaymentPopup(totalAmount) {
+      popupPayableAmount.textContent = `INR ${totalAmount.toLocaleString("en-IN")}`;
+      clearPaymentStatus();
+      if (!pendingBooking) return;
+      const upiUrl = buildUpiUrl(Number(totalAmount), pendingBooking.id);
+      const qrData = encodeURIComponent(upiUrl);
+      upiQrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${qrData}`;
+      paymentPopup.classList.add("show");
+      paymentPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function closePaymentPopup() {
+      paymentPopup.classList.remove("show");
+      paymentPopup.setAttribute("aria-hidden", "true");
+      clearPaymentStatus();
+      pendingBooking = null;
+    }
+
+    function openUpiApp() {
+      if (!pendingBooking) {
+        showPaymentStatus("error", "Booking data missing. Please try again.");
+        return;
+      }
+      if (!PAYMENT_CONFIG.upiVPA || PAYMENT_CONFIG.upiVPA === "YOUR_UPI_ID@bank") {
+        showPaymentStatus("error", "UPI not configured. Set your real UPI ID in booking.html (PAYMENT_CONFIG.upiVPA).");
+        return;
+      }
+      const upiUrl = buildUpiUrl(Number(pendingBooking.total || 0), pendingBooking.id);
+      showPaymentStatus("success", "Opening UPI app...");
+      setTimeout(() => {
+        window.location.href = upiUrl;
+      }, 300);
+    }
+
+    function markPaymentDone() {
+      if (!pendingBooking) {
+        showPaymentStatus("error", "Booking data missing. Please try again.");
+        return;
+      }
+      if (!PAYMENT_CONFIG.upiVPA || PAYMENT_CONFIG.upiVPA === "YOUR_UPI_ID@bank") {
+        showPaymentStatus("error", "UPI not configured. Set your real UPI ID in booking.html (PAYMENT_CONFIG.upiVPA).");
+        return;
+      }
+
+      pendingBooking.paymentMethod = "UPI";
+      pendingBooking.paymentStatus = "Paid";
+      pendingBooking.paymentAt = new Date().toISOString();
+
+      const allBookings = getBookings();
+      allBookings.push(pendingBooking);
+      localStorage.setItem("trishulBookings", JSON.stringify(allBookings));
+
+      showPaymentStatus("success", "Payment marked as completed. Closing...");
+
+      setTimeout(() => {
+        bookingForm.reset();
+        checkOut.min = getTodayYMD();
+        availabilityBadge.textContent = "";
+        updateSummary();
+        pendingBooking = null;
+        paymentPopup.classList.remove("show");
+        paymentPopup.setAttribute("aria-hidden", "true");
+        showStatus("success", "Thanks for booking!");
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 900);
+      }, 1100);
+    }
+
+    function updateSummary() {
+      const nights = getNights();
+      const rate = roomRates[roomType.value] || 0;
+      const offerDiscount = getOfferDiscountByNights(nights);
+
+      let roomChargeValue = rate * nights;
+      if (offerDiscount > 0) {
+        roomChargeValue = Math.round(roomChargeValue * (100 - offerDiscount) / 100);
+      } else if (prefilledDays > 0 && prefilledDiscount > 0 && nights === prefilledDays) {
+        roomChargeValue = Math.round(roomChargeValue * (100 - prefilledDiscount) / 100);
+      }
+
+      const total = roomChargeValue;
+
+      document.getElementById("nightCount").textContent = String(nights);
+      document.getElementById("roomCharge").textContent = `INR ${roomChargeValue.toLocaleString("en-IN")}`;
+      document.getElementById("offerDiscount").textContent = `${offerDiscount}%`;
+      document.getElementById("totalAmount").textContent = `INR ${total.toLocaleString("en-IN")}`;
+    }
+
+    function validateAvailability() {
+      availabilityBadge.textContent = "";
+      if (!roomType.value || !checkIn.value || !checkOut.value) return true;
+
+      const inDate = parseDate(checkIn.value);
+      const outDate = parseDate(checkOut.value);
+
+      if (outDate <= inDate) {
+        availabilityBadge.textContent = "Check-out date check-in se bada hona chahiye.";
+        availabilityBadge.style.color = "#9f1d1d";
+        return false;
+      }
+
+      const conflict = findConflict(roomType.value, inDate, outDate);
+      if (conflict) {
+        availabilityBadge.textContent = `Not Available: Room ${conflict.checkIn} se ${conflict.checkOut} tak booked hai.`;
+        availabilityBadge.style.color = "#9f1d1d";
+        return false;
+      }
+
+      availabilityBadge.textContent = "Available: Selected dates par room free hai.";
+      availabilityBadge.style.color = "#0f6a3f";
+      return true;
+    }
+
+    function initializeBookingDates() {
+      const today = getTodayYMD();
+      checkIn.min = today;
+      checkOut.min = today;
+
+      checkIn.addEventListener("change", () => {
+        checkOut.min = checkIn.value || today;
+        updateSummary();
+        validateAvailability();
+        renderAvailabilityCalendar();
+      });
+    }
+
+    bookingForm.addEventListener("input", () => {
+      clearStatus();
+      updateSummary();
+      validateAvailability();
+      renderAvailabilityCalendar();
+    });
+
+    bookingForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      clearStatus();
+
+      if (!bookingForm.checkValidity()) {
+        showStatus("error", "Please form ke sab required fields sahi fill karein.");
+        return;
+      }
+
+      const today = parseDate(getTodayYMD());
+      const inDate = parseDate(checkIn.value);
+      const outDate = parseDate(checkOut.value);
+      if (inDate < today) {
+        showStatus("error", "Past date booking allowed nahi hai.");
+        return;
+      }
+      if (outDate <= inDate) {
+        showStatus("error", "Check-out date check-in se bada hona chahiye.");
+        return;
+      }
+      if (!validateAvailability()) {
+        showStatus("error", "Selected room in dates par available nahi hai.");
+        return;
+      }
+
+      const rate = roomRates[roomType.value];
+      const nights = getNights();
+      const guestCount = Number(guests.value);
+      const offerDiscount = getOfferDiscountByNights(nights);
+      let roomCharge = rate * nights;
+      if (offerDiscount > 0) {
+        roomCharge = Math.round(roomCharge * (100 - offerDiscount) / 100);
+      } else if (prefilledDays > 0 && prefilledDiscount > 0 && nights === prefilledDays) {
+        roomCharge = Math.round(roomCharge * (100 - prefilledDiscount) / 100);
+      }
+      const total = roomCharge;
+
+      const booking = {
+        id: `TV-${Date.now()}`,
+        guestName: document.getElementById("guestName").value.trim(),
+        phone: document.getElementById("phone").value.trim(),
+        email: document.getElementById("email").value.trim(),
+        roomType: roomType.value,
+        guests: guestCount,
+        checkIn: checkIn.value,
+        checkOut: checkOut.value,
+        specialRequest: document.getElementById("specialRequest").value.trim(),
+        nights,
+        offerDiscount,
+        total
+      };
+
+      pendingBooking = booking;
+      showStatus("success", `Booking ID ${booking.id} generated. Please complete payment.`);
+      openPaymentPopup(total);
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initializeBookingDates();
+      updateSummary();
+
+      if (prefilledRoom && roomRates[prefilledRoom]) {
+        roomType.value = prefilledRoom;
+      }
+      if (prefilledDays > 0) {
+        const inDate = new Date();
+        const outDate = new Date();
+        outDate.setDate(inDate.getDate() + prefilledDays);
+        checkIn.value = getTodayYMD();
+        checkOut.value = `${outDate.getFullYear()}-${String(outDate.getMonth() + 1).padStart(2, "0")}-${String(outDate.getDate()).padStart(2, "0")}`;
+        checkOut.min = checkIn.value;
+      }
+      updateSummary();
+      validateAvailability();
+      availabilityMonth = new Date(parseDate(getTodayYMD()).getFullYear(), parseDate(getTodayYMD()).getMonth(), 1);
+      renderAvailabilityCalendar();
+
+      prevMonthBtn.addEventListener("click", () => {
+        availabilityMonth = new Date(availabilityMonth.getFullYear(), availabilityMonth.getMonth() - 1, 1);
+        renderAvailabilityCalendar();
+      });
+
+      nextMonthBtn.addEventListener("click", () => {
+        availabilityMonth = new Date(availabilityMonth.getFullYear(), availabilityMonth.getMonth() + 1, 1);
+        renderAvailabilityCalendar();
+      });
+
+      const userGreeting = document.getElementById("userGreeting");
+      const logoutLink = document.getElementById("logoutLink");
+      const loginLink = document.getElementById("loginLink");
+      const registerLink = document.getElementById("registerLink");
+      const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+
+      if (loggedInUser) {
+        userGreeting.style.display = "inline";
+        logoutLink.style.display = "inline";
+        userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
+        if (loginLink) loginLink.style.display = "none";
+        if (registerLink) registerLink.style.display = "none";
+        document.getElementById("guestName").value = loggedInUser.name || "";
+      }
+    });
+
+    function closeMobileMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      ul.classList.remove("show");
+      hamburger.classList.remove("active");
+      document.body.classList.remove("menu-open");
+    }
+
+    function toggleMenu() {
+      const ul = document.querySelector("nav#mainNav ul");
+      const hamburger = document.querySelector(".hamburger");
+      const isOpen = ul.classList.toggle("show");
+      hamburger.classList.toggle("active", isOpen);
+      document.body.classList.toggle("menu-open", isOpen);
+    }
+
+    document.querySelectorAll("nav#mainNav a").forEach((link) => {
+      link.addEventListener("click", closeMobileMenu);
+    });
+
+    document.addEventListener("click", function (event) {
+      const nav = document.getElementById("mainNav");
+      const hamburger = document.querySelector(".hamburger");
+      const ul = document.querySelector("nav#mainNav ul");
+      if (!ul.classList.contains("show")) return;
+      if (nav.contains(event.target) || hamburger.contains(event.target)) return;
+      closeMobileMenu();
+    });
+
+    window.addEventListener("resize", function () {
+      if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+
+    (function trackSiteVisit() {
+      const analyticsKey = "trishulVisitorAnalytics";
+      const visitorIdKey = "trishulVisitorId";
+      const now = Date.now();
+      const today = new Date().toISOString().slice(0, 10);
+      const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
+      if (!analytics || typeof analytics !== "object") analytics = {};
+
+      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
+      analytics.dailyVisits = analytics.dailyVisits || {};
+      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
+      analytics.pageVisits = analytics.pageVisits || {};
+      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+
+      let visitorId = localStorage.getItem(visitorIdKey);
+      if (!visitorId) {
+        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
+        localStorage.setItem(visitorIdKey, visitorId);
+      }
+
+      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
+      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
+        firstSeen: now,
+        lastSeen: now,
+        visits: 0
+      };
+      existingVisitor.lastSeen = now;
+      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
+      analytics.uniqueVisitors[visitorId] = existingVisitor;
+      analytics.lastVisitAt = now;
+
+      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
+    })();
+</script>
+</body>
+</html>
+
+
