@@ -84,6 +84,70 @@
       gap: 12px;
     }
 
+    .profile-card {
+      background: #fff;
+      border: 1px solid #dfeaf4;
+      border-radius: 14px;
+      box-shadow: 0 12px 24px rgba(16, 42, 67, 0.1);
+      padding: 16px;
+    }
+
+    .profile-title {
+      margin: 0 0 12px;
+      color: #0f2f52;
+      font-family: Georgia, serif;
+      font-size: 1.3rem;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 12px;
+    }
+
+    .profile-field {
+      display: grid;
+      gap: 5px;
+    }
+
+    .profile-field label {
+      color: #486581;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .profile-field input,
+    .profile-field textarea {
+      border: 1px solid #d7e3ef;
+      border-radius: 8px;
+      padding: 10px 11px;
+      font: inherit;
+      color: #102a43;
+      background: #f9fbfd;
+    }
+
+    .profile-field textarea {
+      min-height: 84px;
+      resize: vertical;
+      grid-column: 1 / -1;
+    }
+
+    .profile-field input:disabled,
+    .profile-field textarea:disabled {
+      opacity: 1;
+      cursor: not-allowed;
+      background: #f1f5f9;
+      color: #334e68;
+    }
+
+    .profile-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
     .stat-card {
       background: #fff;
       border: 1px solid #dfeaf4;
@@ -298,6 +362,9 @@
       .booking-grid {
         grid-template-columns: 1fr;
       }
+      .profile-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -363,6 +430,33 @@
         </article>
       </div>
 
+      <section class="profile-card">
+        <h3 class="profile-title">My Information</h3>
+        <div class="profile-grid">
+          <div class="profile-field">
+            <label for="profileName">Full Name</label>
+            <input id="profileName" type="text" disabled />
+          </div>
+          <div class="profile-field">
+            <label for="profileEmail">Email</label>
+            <input id="profileEmail" type="email" disabled />
+          </div>
+          <div class="profile-field">
+            <label for="profilePhone">Phone Number</label>
+            <input id="profilePhone" type="tel" pattern="[0-9]{10}" disabled />
+          </div>
+          <div class="profile-field">
+            <label for="profileAddress">Address</label>
+            <textarea id="profileAddress" disabled></textarea>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button id="editProfileBtn" class="dash-btn secondary" type="button"><i class="fas fa-pen"></i> Edit</button>
+          <button id="saveProfileBtn" class="dash-btn primary" type="button" style="display:none;"><i class="fas fa-floppy-disk"></i> Save</button>
+          <button id="cancelProfileBtn" class="dash-btn secondary" type="button" style="display:none;">Cancel</button>
+        </div>
+      </section>
+
       <div class="bookings-wrap">
         <h3 class="bookings-title">My Bookings</h3>
         <div id="bookingsList"></div>
@@ -390,8 +484,16 @@
     const bookingsList = document.getElementById("bookingsList");
     const dashMsg = document.getElementById("dashMsg");
     const cancelPopup = document.getElementById("cancelPopup");
+    const profileName = document.getElementById("profileName");
+    const profileEmail = document.getElementById("profileEmail");
+    const profilePhone = document.getElementById("profilePhone");
+    const profileAddress = document.getElementById("profileAddress");
+    const editProfileBtn = document.getElementById("editProfileBtn");
+    const saveProfileBtn = document.getElementById("saveProfileBtn");
+    const cancelProfileBtn = document.getElementById("cancelProfileBtn");
     let currentUser = null;
     let pendingCancelBookingId = null;
+    let profileEditMode = false;
 
     function showDashMsg(type, text) {
       dashMsg.className = `dash-msg ${type}`;
@@ -507,6 +609,67 @@
       renderBookings(bookings);
     }
 
+    function setProfileEditMode(isEdit) {
+      profileEditMode = isEdit;
+      profileName.disabled = !isEdit;
+      profilePhone.disabled = !isEdit;
+      profileAddress.disabled = !isEdit;
+      profileEmail.disabled = true;
+      editProfileBtn.style.display = isEdit ? "none" : "inline-flex";
+      saveProfileBtn.style.display = isEdit ? "inline-flex" : "none";
+      cancelProfileBtn.style.display = isEdit ? "inline-flex" : "none";
+    }
+
+    function fillProfileForm() {
+      if (!currentUser) return;
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const user = users.find((u) => (u.email || "").toLowerCase() === (currentUser.email || "").toLowerCase());
+      const source = user || currentUser;
+
+      profileName.value = source.name || "";
+      profileEmail.value = source.email || "";
+      profilePhone.value = source.phone || "";
+      profileAddress.value = source.address || "";
+    }
+
+    function saveProfile() {
+      const name = profileName.value.trim();
+      const phone = profilePhone.value.trim();
+      const address = profileAddress.value.trim();
+
+      if (!name) {
+        showDashMsg("error", "Name required hai.");
+        return;
+      }
+      if (phone && !/^[0-9]{10}$/.test(phone)) {
+        showDashMsg("error", "Phone number 10 digits ka hona chahiye.");
+        return;
+      }
+      if (!address) {
+        showDashMsg("error", "Address required hai.");
+        return;
+      }
+
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const index = users.findIndex((u) => (u.email || "").toLowerCase() === (currentUser.email || "").toLowerCase());
+      if (index !== -1) {
+        users[index].name = name;
+        users[index].phone = phone;
+        users[index].address = address;
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+      }
+
+      currentUser.name = name;
+      localStorage.setItem("loggedInUser", JSON.stringify(currentUser));
+
+      document.getElementById("welcomeText").textContent = `Welcome, ${currentUser.name}`;
+      const userGreeting = document.getElementById("userGreeting");
+      userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${currentUser.name}</a>`;
+
+      setProfileEditMode(false);
+      showDashMsg("success", "Profile updated successfully.");
+    }
+
     function closeMobileMenu() {
       const ul = document.querySelector("nav#mainNav ul");
       const hamburger = document.querySelector(".hamburger");
@@ -562,8 +725,23 @@
       userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${currentUser.name}</a>`;
       if (loginLink) loginLink.style.display = "none";
 
+      fillProfileForm();
+      setProfileEditMode(false);
       refreshDashboard();
     });
+
+    editProfileBtn.addEventListener("click", () => {
+      clearDashMsg();
+      setProfileEditMode(true);
+    });
+
+    cancelProfileBtn.addEventListener("click", () => {
+      clearDashMsg();
+      fillProfileForm();
+      setProfileEditMode(false);
+    });
+
+    saveProfileBtn.addEventListener("click", saveProfile);
 
     (function trackSiteVisit() {
       const analyticsKey = "trishulVisitorAnalytics";
