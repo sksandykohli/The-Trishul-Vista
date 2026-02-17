@@ -271,91 +271,6 @@
       border-color: #b9ddf2;
     }
 
-    .payment-popup {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.62);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-      z-index: 6000;
-    }
-
-    .payment-popup.show {
-      display: flex;
-    }
-
-    .payment-box {
-      width: min(520px, 96vw);
-      background: #fff;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25);
-    }
-
-    .payment-box h3 {
-      margin: 0 0 10px;
-      color: #102a43;
-      font-family: Georgia, serif;
-      font-size: 1.4rem;
-    }
-
-    .payment-total {
-      margin: 0 0 14px;
-      color: #1f6a9a;
-      font-weight: 800;
-      font-size: 1.05rem;
-    }
-
-    .upi-qr-wrap {
-      display: grid;
-      justify-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
-    }
-
-    .upi-qr-wrap img {
-      width: 220px;
-      height: 220px;
-      border-radius: 10px;
-      border: 1px solid #dce6f0;
-      background: #fff;
-      padding: 8px;
-    }
-
-    .upi-note {
-      margin: 0;
-      color: #486581;
-      font-size: 0.9rem;
-      text-align: center;
-    }
-
-    .payment-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
-      gap: 10px;
-    }
-
-    .payment-btn {
-      border: 0;
-      border-radius: 8px;
-      padding: 11px 12px;
-      font-weight: 700;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-
-    .payment-btn.cancel {
-      background: #eef2f6;
-      color: #334e68;
-    }
-
-    .payment-btn.pay {
-      background: #2e8abc;
-      color: #fff;
-    }
-
     @media (max-width: 760px) {
       .booking-wrap {
         padding: 18px;
@@ -485,24 +400,6 @@
     </section>
   </main>
 
-  <div id="paymentPopup" class="payment-popup" aria-hidden="true">
-    <div class="payment-box">
-      <h3>Complete Payment</h3>
-      <p class="payment-total">Payable Amount: <span id="popupPayableAmount">INR 0</span></p>
-
-      <div class="upi-qr-wrap">
-        <img id="upiQrImage" src="" alt="UPI QR Code" />
-        <p class="upi-note">UPI QR scan karein ya Open UPI App button use karein.</p>
-      </div>
-
-      <p id="paymentStatus" class="status-msg"></p>
-      <div class="payment-actions">
-        <button type="button" class="payment-btn cancel" onclick="closePaymentPopup()">Cancel</button>
-        <button type="button" class="payment-btn pay" onclick="openUpiApp()">Open UPI App</button>
-        <button type="button" class="payment-btn pay" onclick="markPaymentDone()">I Have Paid</button>
-      </div>
-    </div>
-  </div>
   <!-- Contact Section -->
   <div class="section-contact">
     <h2 class="contact-title"><i class="fa-solid fa-phone"></i> Contact Us</h2>
@@ -533,11 +430,6 @@
       "Serenity Classic Suite": 3500,
       "Pinewood Attic Suite": 5000
     };
-    const PAYMENT_CONFIG = {
-      upiVPA: "YOUR_UPI_ID@bank",
-      upiPayeeName: "The Trishul Vista"
-    };
-
     const urlParams = new URLSearchParams(window.location.search);
     const prefilledRoom = urlParams.get("room");
     const prefilledDays = Number(urlParams.get("days")) || 0;
@@ -550,15 +442,10 @@
     const checkOut = document.getElementById("checkOut");
     const availabilityBadge = document.getElementById("availabilityBadge");
     const statusMsg = document.getElementById("statusMsg");
-    const paymentPopup = document.getElementById("paymentPopup");
-    const popupPayableAmount = document.getElementById("popupPayableAmount");
-    const paymentStatus = document.getElementById("paymentStatus");
-    const upiQrImage = document.getElementById("upiQrImage");
     const availabilityMonthLabel = document.getElementById("availabilityMonthLabel");
     const availabilityGrid = document.getElementById("availabilityGrid");
     const prevMonthBtn = document.getElementById("prevMonthBtn");
     const nextMonthBtn = document.getElementById("nextMonthBtn");
-    let pendingBooking = null;
     let availabilityMonth = new Date();
 
     function getTodayYMD() {
@@ -710,89 +597,6 @@
       statusMsg.textContent = "";
     }
 
-    function showPaymentStatus(type, text) {
-      paymentStatus.className = `status-msg ${type}`;
-      paymentStatus.textContent = text;
-    }
-
-    function clearPaymentStatus() {
-      paymentStatus.className = "status-msg";
-      paymentStatus.textContent = "";
-    }
-
-    function buildUpiUrl(amount, bookingId) {
-      return `upi://pay?pa=${encodeURIComponent(PAYMENT_CONFIG.upiVPA)}&pn=${encodeURIComponent(PAYMENT_CONFIG.upiPayeeName)}&am=${encodeURIComponent(amount.toFixed(2))}&cu=INR&tn=${encodeURIComponent("Booking " + bookingId)}`;
-    }
-
-    function openPaymentPopup(totalAmount) {
-      popupPayableAmount.textContent = `INR ${totalAmount.toLocaleString("en-IN")}`;
-      clearPaymentStatus();
-      if (!pendingBooking) return;
-      const upiUrl = buildUpiUrl(Number(totalAmount), pendingBooking.id);
-      const qrData = encodeURIComponent(upiUrl);
-      upiQrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${qrData}`;
-      paymentPopup.classList.add("show");
-      paymentPopup.setAttribute("aria-hidden", "false");
-    }
-
-    function closePaymentPopup() {
-      paymentPopup.classList.remove("show");
-      paymentPopup.setAttribute("aria-hidden", "true");
-      clearPaymentStatus();
-      pendingBooking = null;
-    }
-
-    function openUpiApp() {
-      if (!pendingBooking) {
-        showPaymentStatus("error", "Booking data missing. Please try again.");
-        return;
-      }
-      if (!PAYMENT_CONFIG.upiVPA || PAYMENT_CONFIG.upiVPA === "YOUR_UPI_ID@bank") {
-        showPaymentStatus("error", "UPI not configured. Set your real UPI ID in booking.html (PAYMENT_CONFIG.upiVPA).");
-        return;
-      }
-      const upiUrl = buildUpiUrl(Number(pendingBooking.total || 0), pendingBooking.id);
-      showPaymentStatus("success", "Opening UPI app...");
-      setTimeout(() => {
-        window.location.href = upiUrl;
-      }, 300);
-    }
-
-    function markPaymentDone() {
-      if (!pendingBooking) {
-        showPaymentStatus("error", "Booking data missing. Please try again.");
-        return;
-      }
-      if (!PAYMENT_CONFIG.upiVPA || PAYMENT_CONFIG.upiVPA === "YOUR_UPI_ID@bank") {
-        showPaymentStatus("error", "UPI not configured. Set your real UPI ID in booking.html (PAYMENT_CONFIG.upiVPA).");
-        return;
-      }
-
-      pendingBooking.paymentMethod = "UPI";
-      pendingBooking.paymentStatus = "Paid";
-      pendingBooking.paymentAt = new Date().toISOString();
-
-      const allBookings = getBookings();
-      allBookings.push(pendingBooking);
-      localStorage.setItem("trishulBookings", JSON.stringify(allBookings));
-
-      showPaymentStatus("success", "Payment marked as completed. Closing...");
-
-      setTimeout(() => {
-        bookingForm.reset();
-        checkOut.min = getTodayYMD();
-        availabilityBadge.textContent = "";
-        updateSummary();
-        pendingBooking = null;
-        paymentPopup.classList.remove("show");
-        paymentPopup.setAttribute("aria-hidden", "true");
-        showStatus("success", "Thanks for booking!");
-        setTimeout(() => {
-          window.location.href = "index.html";
-        }, 900);
-      }, 1100);
-    }
-
     function updateSummary() {
       const nights = getNights();
       const rate = roomRates[roomType.value] || 0;
@@ -910,9 +714,20 @@
         total
       };
 
-      pendingBooking = booking;
-      showStatus("success", `Booking ID ${booking.id} generated. Please complete payment.`);
-      openPaymentPopup(total);
+      booking.paymentStatus = "Confirmed";
+      booking.paymentMethod = "N/A";
+      booking.paymentAt = new Date().toISOString();
+
+      const allBookings = getBookings();
+      allBookings.push(booking);
+      localStorage.setItem("trishulBookings", JSON.stringify(allBookings));
+
+      bookingForm.reset();
+      checkOut.min = getTodayYMD();
+      availabilityBadge.textContent = "";
+      updateSummary();
+      renderAvailabilityCalendar();
+      showStatus("success", `Booking confirmed! Your Booking ID is ${booking.id}.`);
     });
 
     document.addEventListener("DOMContentLoaded", () => {
