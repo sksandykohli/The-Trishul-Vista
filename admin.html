@@ -127,6 +127,30 @@
       border-color: #2e8abc;
     }
 
+    .booking-filter-switch {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .booking-filter-tab {
+      border: 1px solid #d4e2ef;
+      background: #f4f8fc;
+      color: #355070;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .booking-filter-tab.active {
+      background: #0f2f52;
+      color: #fff;
+      border-color: #0f2f52;
+    }
+
     .panel-title {
       margin: 0 0 10px;
       color: #0f2f52;
@@ -186,6 +210,18 @@
       border-color: #ffe0aa;
     }
 
+    .badge.approved {
+      background: #edfdf4;
+      color: #0f6a3f;
+      border-color: #bdeccc;
+    }
+
+    .badge.awaiting {
+      background: #fff4e6;
+      color: #9a6700;
+      border-color: #ffd8a8;
+    }
+
     .meta {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -222,6 +258,11 @@
 
     .btn.danger {
       background: #e64949;
+      color: #fff;
+    }
+
+    .btn.approve {
+      background: #2f9e44;
       color: #fff;
     }
 
@@ -512,6 +553,11 @@
         </div>
         <section id="bookingsPanelWrap">
           <h3 class="panel-title">Bookings</h3>
+          <div class="booking-filter-switch">
+            <button class="booking-filter-tab active" type="button" data-booking-filter="today">Today Booking</button>
+            <button class="booking-filter-tab" type="button" data-booking-filter="next">Next Day Booking</button>
+            <button class="booking-filter-tab" type="button" data-booking-filter="past">Past Booking</button>
+          </div>
           <div id="bookingsPanel" class="list"></div>
         </section>
         <section id="usersPanelWrap" style="display:none;">
@@ -569,12 +615,14 @@
     const usersPanel = document.getElementById("usersPanel");
     const searchInput = document.getElementById("searchInput");
     const panelTabs = document.querySelectorAll(".panel-tab");
+    const bookingFilterTabs = document.querySelectorAll(".booking-filter-tab");
     const bookingsPanelWrap = document.getElementById("bookingsPanelWrap");
     const usersPanelWrap = document.getElementById("usersPanelWrap");
     const topPagesList = document.getElementById("topPagesList");
     const userInsightsList = document.getElementById("userInsightsList");
     const confirmPopup = document.getElementById("confirmPopup");
     const confirmPopupText = document.getElementById("confirmPopupText");
+    let currentBookingFilter = "today";
     let confirmAction = null;
 
     function getAnalytics() {
@@ -709,46 +757,96 @@
     }
 
     function renderBookings() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const parseLocalDate = (value) => {
+        if (!value) return null;
+        const parts = String(value).split("-").map(Number);
+        if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+        const [year, month, day] = parts;
+        const dt = new Date(year, month - 1, day);
+        dt.setHours(0, 0, 0, 0);
+        return Number.isNaN(dt.getTime()) ? null : dt;
+      };
+
       const q = (searchInput.value || "").trim().toLowerCase();
       const bookings = getBookings().filter((b) => {
+        const checkInDate = parseLocalDate(b.checkIn);
+        const checkOutDate = parseLocalDate(b.checkOut);
+        let bookingFilterMatch = true;
+
+        if (currentBookingFilter === "past") {
+          bookingFilterMatch = !!checkOutDate && checkOutDate <= today;
+        } else if (currentBookingFilter === "today") {
+          bookingFilterMatch = !!checkInDate && !!checkOutDate && checkInDate <= today && checkOutDate > today;
+        } else if (currentBookingFilter === "next") {
+          bookingFilterMatch = !!checkInDate && checkInDate > today;
+        }
+
         const searchMatch =
           !q ||
           String(b.id || "").toLowerCase().includes(q) ||
           String(b.guestName || "").toLowerCase().includes(q) ||
           String(b.email || "").toLowerCase().includes(q);
-        return searchMatch;
+        return bookingFilterMatch && searchMatch;
       });
 
       bookingsPanel.innerHTML = "";
       if (!bookings.length) {
-        bookingsPanel.innerHTML = `<div class="empty">No bookings found.</div>`;
+        const title =
+          currentBookingFilter === "past"
+            ? "No past bookings found."
+            : currentBookingFilter === "next"
+            ? "No next day bookings found."
+            : "No today bookings found.";
+        bookingsPanel.innerHTML = `<div class="empty">${title}</div>`;
         return;
       }
 
-      const sorted = [...bookings].sort((a, b) => String(b.id).localeCompare(String(a.id)));
+      const sorted = [...bookings].sort((a, b) => {
+        const noA = Number(a.bookingNo || 0);
+        const noB = Number(b.bookingNo || 0);
+        if (noA && noB) return noA - noB;
+        const timeA = Number(a.createdAt || String(a.id || "").replace("TV-", "") || 0);
+        const timeB = Number(b.createdAt || String(b.id || "").replace("TV-", "") || 0);
+        return timeA - timeB;
+      });
       sorted.forEach((b) => {
         const paid = (b.paymentStatus || "").toLowerCase() === "paid";
         const statusText = b.paymentStatus || "Pending";
+        const isApproved = String(b.approvalStatus || "Approved").toLowerCase() === "approved";
+        const approvalText = isApproved ? "Approved" : "Pending Approval";
+        const bookingNumber = Number(b.bookingNo || 0) || "-";
         const card = document.createElement("article");
         card.className = "item";
         card.innerHTML = `
           <div class="item-top">
-            <p class="item-id">Booking ID: ${b.id || "-"}</p>
-            <span class="badge ${paid ? "paid" : "pending"}">${statusText}</span>
+            <p class="item-id">Booking No: ${bookingNumber} | ID: ${b.id || "-"}</p>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <span class="badge ${isApproved ? "approved" : "awaiting"}">${approvalText}</span>
+              <span class="badge ${paid ? "paid" : "pending"}">${statusText}</span>
+            </div>
           </div>
           <div class="meta">
             <p><strong>Name:</strong> ${b.guestName || "-"}</p>
             <p><strong>Email:</strong> ${b.email || "-"}</p>
+            <p><strong>Phone:</strong> ${b.phone || "-"}</p>
             <p><strong>Room:</strong> ${b.roomType || "-"}</p>
             <p><strong>Guests:</strong> ${b.guests || "-"}</p>
             <p><strong>Check-in:</strong> ${b.checkIn || "-"}</p>
             <p><strong>Check-out:</strong> ${b.checkOut || "-"}</p>
             <p><strong>Nights:</strong> ${b.nights || "-"}</p>
             <p><strong>Total:</strong> INR ${Number(b.total || 0).toLocaleString("en-IN")}</p>
+            <p style="grid-column: 1 / -1;"><strong>Address:</strong> ${b.address || "-"}</p>
           </div>
           <div class="actions">
-            <button class="btn edit" type="button" data-action="toggle-paid" data-id="${b.id || ""}">${paid ? "Mark Pending" : "Mark Paid"}</button>
-            <button class="btn danger" type="button" data-action="delete-booking" data-id="${b.id || ""}">Delete</button>
+            ${
+              currentBookingFilter === "past"
+                ? `<span style="color:#627d98;font-size:0.82rem;font-weight:700;">Past booking: edit/delete disabled</span>`
+                : `${!isApproved ? `<button class="btn approve" type="button" data-action="approve-booking" data-id="${b.id || ""}">Approve</button>` : ""}
+                   <button class="btn danger" type="button" data-action="delete-booking" data-id="${b.id || ""}">Delete</button>`
+            }
           </div>
         `;
         bookingsPanel.appendChild(card);
@@ -759,9 +857,25 @@
           const action = btn.dataset.action;
           const id = btn.dataset.id;
           if (!id) return;
-          if (action === "toggle-paid") toggleBookingPayment(id);
+          if (action === "approve-booking") approveBooking(id);
           if (action === "delete-booking") deleteBooking(id);
         });
+      });
+    }
+
+    function approveBooking(id) {
+      openConfirmPopup("Approve this booking request?", () => {
+        const all = getBookings();
+        const index = all.findIndex((b) => b.id === id);
+        if (index === -1) return;
+        all[index].approvalStatus = "Approved";
+        all[index].approvedAt = new Date().toISOString();
+        all[index].paymentStatus = "Paid";
+        all[index].paymentAt = new Date().toISOString();
+        if (!all[index].paymentMethod) all[index].paymentMethod = "QR";
+        localStorage.setItem("trishulBookings", JSON.stringify(all));
+        showMsg(adminMsg, "success", "Booking approved and marked as Paid.");
+        refreshAdminData();
       });
     }
 
@@ -805,17 +919,6 @@
       });
     }
 
-    function toggleBookingPayment(id) {
-      const all = getBookings();
-      const index = all.findIndex((b) => b.id === id);
-      if (index === -1) return;
-      const current = (all[index].paymentStatus || "").toLowerCase();
-      all[index].paymentStatus = current === "paid" ? "Pending" : "Paid";
-      localStorage.setItem("trishulBookings", JSON.stringify(all));
-      showMsg(adminMsg, "success", "Booking payment status updated.");
-      refreshAdminData();
-    }
-
     function deleteBooking(id) {
       openConfirmPopup("Delete this booking permanently?", () => {
         const all = getBookings().filter((b) => b.id !== id);
@@ -846,6 +949,7 @@
         "Guest Name",
         "Phone",
         "Email",
+        "Address",
         "Room Type",
         "Guests",
         "Check-in",
@@ -854,6 +958,7 @@
         "Offer Discount (%)",
         "Total (INR)",
         "Payment Status",
+        "Approval Status",
         "Payment Method",
         "Payment Date",
         "Special Request"
@@ -869,6 +974,7 @@
         b.guestName || "",
         b.phone || "",
         b.email || "",
+        b.address || "",
         b.roomType || "",
         b.guests || "",
         b.checkIn || "",
@@ -877,6 +983,7 @@
         b.offerDiscount || 0,
         b.total || 0,
         b.paymentStatus || "Pending",
+        b.approvalStatus || "Approved",
         b.paymentMethod || "",
         b.paymentAt ? new Date(b.paymentAt).toLocaleString("en-IN") : "",
         b.specialRequest || ""
@@ -940,6 +1047,16 @@
 
     panelTabs.forEach((tab) => {
       tab.addEventListener("click", () => switchPanel(tab.dataset.panel));
+    });
+
+    bookingFilterTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        currentBookingFilter = tab.dataset.bookingFilter || "today";
+        bookingFilterTabs.forEach((btn) => {
+          btn.classList.toggle("active", btn === tab);
+        });
+        renderBookings();
+      });
     });
 
     function closeMobileMenu() {

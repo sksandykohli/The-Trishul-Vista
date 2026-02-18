@@ -16,7 +16,7 @@
     }
 
     .booking-wrap {
-      max-width: 980px;
+      max-width: 1140px;
       margin: 0 auto;
       background: #fff;
       border-radius: 16px;
@@ -42,6 +42,37 @@
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 14px;
+      align-items: start;
+    }
+
+    .booking-layout {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .booking-form-col {
+      background: #ffffff;
+      border: 1px solid #dce8f5;
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .booking-side-col {
+      background: linear-gradient(145deg, #f8fbff 0%, #eef6ff 100%);
+      border: 1px solid #d5e6f7;
+      border-radius: 12px;
+      padding: 14px;
+      position: sticky;
+      top: 18px;
+    }
+
+    .side-card-title {
+      margin: 0 0 8px;
+      color: #0f2f52;
+      font-size: 1rem;
+      font-weight: 800;
     }
 
     .field {
@@ -54,6 +85,11 @@
       color: #243b53;
       font-size: 0.92rem;
       font-weight: 700;
+    }
+
+    .req-star {
+      color: #d64545;
+      margin-left: 3px;
     }
 
     .field input,
@@ -72,8 +108,29 @@
       resize: vertical;
     }
 
+    .field-error {
+      color: #b42318;
+      font-size: 0.8rem;
+      margin-top: 2px;
+      min-height: 1em;
+      display: block;
+    }
+
+    .field-help {
+      margin-top: 2px;
+      color: #627d98;
+      font-size: 0.78rem;
+    }
+
+    .field input.invalid,
+    .field select.invalid,
+    .field textarea.invalid {
+      border-color: #f04438;
+      box-shadow: 0 0 0 2px rgba(240, 68, 56, 0.12);
+    }
+
     .booking-summary-box {
-      margin-top: 8px;
+      margin-top: 10px;
       background: #f8fbff;
       border: 1px solid #dce8f5;
       border-radius: 10px;
@@ -122,6 +179,147 @@
       font-size: 0.86rem;
       font-weight: 700;
       color: #205493;
+    }
+
+    .policy-box {
+      max-width: 980px;
+      margin: 16px auto 0;
+      background: #f8fbff;
+      border: 1px solid #dce8f5;
+      border-radius: 12px;
+      padding: 18px;
+      color: #243b53;
+    }
+
+    .policy-box h3 {
+      margin: 0 0 10px;
+      color: #102a43;
+      font-size: 1.1rem;
+    }
+
+    .policy-box ul {
+      margin: 0;
+      padding-left: 20px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .payment-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 7100;
+      padding: 16px;
+    }
+
+    .payment-popup.show {
+      display: flex;
+    }
+
+    .payment-card {
+      width: min(420px, 95vw);
+      background: #fff;
+      border-radius: 14px;
+      border: 1px solid #dce8f5;
+      box-shadow: 0 20px 38px rgba(0, 0, 0, 0.25);
+      padding: 18px;
+      text-align: center;
+    }
+
+    .payment-card h3 {
+      margin: 0 0 8px;
+      color: #102a43;
+      font-size: 1.2rem;
+    }
+
+    .payment-card p {
+      margin: 0 0 8px;
+      color: #486581;
+      font-size: 0.92rem;
+    }
+
+    .payment-amount {
+      margin: 10px 0;
+      color: #0b3a67;
+      font-weight: 800;
+      font-size: 1.05rem;
+    }
+
+    .payment-qr {
+      width: 210px;
+      height: 210px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #d6e5f3;
+      margin: 8px auto 12px;
+      display: block;
+      background: #f3f7fb;
+    }
+
+    .payment-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .pay-btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .pay-btn.cancel {
+      background: #eef3f8;
+      color: #2f4e6f;
+    }
+
+    .pay-btn.ok {
+      background: #2e8abc;
+      color: #fff;
+    }
+
+    .booking-success-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 7200;
+      padding: 16px;
+    }
+
+    .booking-success-overlay.show {
+      display: flex;
+    }
+
+    .booking-success-box {
+      width: min(420px, 95vw);
+      background: #ffffff;
+      border: 1px solid #dce8f5;
+      border-radius: 14px;
+      box-shadow: 0 20px 38px rgba(0, 0, 0, 0.25);
+      padding: 18px;
+      text-align: center;
+      color: #102a43;
+    }
+
+    .booking-success-box h3 {
+      margin: 0 0 8px;
+      color: #0f6a3f;
+      font-size: 1.2rem;
+    }
+
+    .booking-success-box p {
+      margin: 0;
+      color: #486581;
+      font-size: 0.92rem;
     }
 
     .book-btn {
@@ -276,6 +474,14 @@
         padding: 18px;
       }
 
+      .booking-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .booking-side-col {
+        position: static;
+      }
+
       .booking-grid {
         grid-template-columns: 1fr;
       }
@@ -315,90 +521,140 @@
   <main class="booking-page">
     <section class="booking-wrap">
       <h2 class="booking-title">Book Your Stay</h2>
-      <p class="booking-subtitle">Past date booking allowed nahi hai. Room already booked hua to auto block ho jayega.</p>
 
       <form id="bookingForm" novalidate>
-        <div class="booking-grid">
-          <div class="field">
-            <label for="guestName">Guest Name</label>
-            <input id="guestName" name="guestName" type="text" required />
-          </div>
-          <div class="field">
-            <label for="phone">Phone Number</label>
-            <input id="phone" name="phone" type="tel" pattern="[0-9]{10}" required />
-          </div>
-        </div>
+        <div class="booking-layout">
+          <div class="booking-form-col">
+            <div class="booking-grid">
+              <div class="field">
+                <label for="guestName">Guest Name<span class="req-star">*</span></label>
+                <input id="guestName" name="guestName" type="text" required />
+              </div>
+              <div class="field">
+                <label for="phone">Mobile Number<span class="req-star">*</span></label>
+                <input id="phone" name="phone" type="tel" pattern="[0-9]{10}" required />
+              </div>
+            </div>
 
-        <div class="booking-grid">
-          <div class="field">
-            <label for="email">Email Address</label>
-            <input id="email" name="email" type="email" required />
-          </div>
-          <div class="field">
-            <label for="roomType">Room Type</label>
-            <select id="roomType" name="roomType" required>
-              <option value="">Select Room</option>
-              <option value="Serenity Classic Suite">Serenity Classic Suite (INR 3,500/night)</option>
-              <option value="Pinewood Attic Suite">Pinewood Attic Suite (INR 5,000/night)</option>
-            </select>
-          </div>
-        </div>
+            <div class="booking-grid">
+              <div class="field">
+                <label for="email">Email Address<span class="req-star">*</span></label>
+                <input id="email" name="email" type="email" required />
+                <div id="accountPasswordField">
+                  <label for="accountPassword">Password (Create Account)</label>
+                  <input id="accountPassword" name="accountPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Minimum 6 characters" />
+                  <p class="field-help">If this email is not registered, an account will be created using this password.</p>
+                </div>
+              </div>
+              <div class="field">
+                <label for="address">Address<span class="req-star">*</span></label>
+                <textarea id="address" name="address" required placeholder="Enter your full address"></textarea>
+              </div>
+            </div>
 
-        <div class="booking-grid">
-          <div class="field">
-            <label for="guests">No. of Guests</label>
-            <select id="guests" name="guests" required>
-              <option value="">Select Guests</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-          </div>
-        </div>
+            <div class="booking-grid">
+              <div class="field">
+                <label for="roomType">Room Type<span class="req-star">*</span></label>
+                <select id="roomType" name="roomType" required>
+                  <option value="Serenity Classic Suite" selected>Serenity Classic Suite (INR 3,500/night)</option>
+                  <option value="Pinewood Attic Suite">Pinewood Attic Suite (INR 5,000/night)</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="guests">No. of Guests<span class="req-star">*</span></label>
+                <select id="guests" name="guests" required>
+                  <option value="">Select Guests</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+              </div>
+            </div>
 
-        <div class="booking-grid">
-          <div class="field">
-            <label for="checkIn">Check-in Date</label>
-            <input id="checkIn" name="checkIn" type="date" required />
-          </div>
-          <div class="field">
-            <label for="checkOut">Check-out Date</label>
-            <input id="checkOut" name="checkOut" type="date" required />
-          </div>
-        </div>
+            <div class="booking-grid">
+              <div class="field">
+                <label for="checkIn">Check-in Date<span class="req-star">*</span></label>
+                <input id="checkIn" name="checkIn" type="date" required />
+              </div>
+              <div class="field">
+                <label for="checkOut">Check-out Date<span class="req-star">*</span></label>
+                <input id="checkOut" name="checkOut" type="date" required />
+              </div>
+            </div>
 
-        <div class="availability-calendar">
-          <div class="availability-head">
-            <button type="button" class="month-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
-            <p class="month-label" id="availabilityMonthLabel">Availability</p>
-            <button type="button" class="month-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+            <div class="field">
+              <label for="specialRequest">Special Request</label>
+              <textarea id="specialRequest" name="specialRequest" placeholder="Any request? (optional)"></textarea>
+            </div>
+
+            <p id="statusMsg" class="status-msg"></p>
+            <button class="book-btn" type="submit"><i class="fas fa-calendar-check"></i> Confirm Booking</button>
           </div>
-          <div class="availability-legend">
-            <span class="legend-item"><span class="legend-dot green"></span> Available</span>
-            <span class="legend-item"><span class="legend-dot red"></span> Booked</span>
-            <span class="legend-item"><span class="legend-dot gray"></span> Select room first</span>
-          </div>
-          <div id="availabilityGrid" class="availability-grid"></div>
-        </div>
 
-        <div class="field">
-          <label for="specialRequest">Special Request</label>
-          <textarea id="specialRequest" name="specialRequest" placeholder="Any request? (optional)"></textarea>
-          <p id="availabilityBadge" class="availability-badge"></p>
-        </div>
+          <aside class="booking-side-col">
+            <h3 class="side-card-title"><i class="fas fa-calendar-days"></i> Availability Calendar</h3>
+            <div class="availability-calendar">
+              <div class="availability-head">
+                <button type="button" class="month-nav-btn" id="prevMonthBtn"><i class="fas fa-chevron-left"></i></button>
+                <p class="month-label" id="availabilityMonthLabel">Availability</p>
+                <button type="button" class="month-nav-btn" id="nextMonthBtn"><i class="fas fa-chevron-right"></i></button>
+              </div>
+              <div class="availability-legend">
+                <span class="legend-item"><span class="legend-dot green"></span> Available</span>
+                <span class="legend-item"><span class="legend-dot red"></span> Booked</span>
+                <span class="legend-item"><span class="legend-dot gray"></span> Select room first</span>
+              </div>
+              <div id="availabilityGrid" class="availability-grid"></div>
+              <p id="availabilityBadge" class="availability-badge"></p>
+            </div>
 
-        <div class="booking-summary-box">
-          <p class="summary-line"><span>Room Charge</span><span id="roomCharge">INR 0</span></p>
-          <p class="summary-line"><span>Offer Discount</span><span id="offerDiscount">0%</span></p>
-          <p class="summary-line"><span>Nights</span><span id="nightCount">0</span></p>
-          <p class="summary-line total"><span>Total Amount</span><span id="totalAmount">INR 0</span></p>
+            <div class="booking-summary-box">
+              <p class="summary-line"><span>Room Charge</span><span id="roomCharge">INR 0</span></p>
+              <p class="summary-line"><span>Offer Discount</span><span id="offerDiscount">0%</span></p>
+              <p class="summary-line"><span>Nights</span><span id="nightCount">0</span></p>
+              <p class="summary-line total"><span>Total Amount</span><span id="totalAmount">INR 0</span></p>
+            </div>
+          </aside>
         </div>
-
-        <p id="statusMsg" class="status-msg"></p>
-        <button class="book-btn" type="submit"><i class="fas fa-calendar-check"></i> Confirm Booking</button>
       </form>
     </section>
   </main>
+
+  <div id="paymentPopup" class="payment-popup" aria-hidden="true">
+    <div class="payment-card">
+      <h3><i class="fas fa-qrcode"></i> Complete Advance Payment</h3>
+      <p>Please scan the QR code to complete the advance payment and confirm your booking.</p>
+      <p class="payment-amount" id="paymentAmountText">Advance Amount: INR 500</p>
+      <img id="paymentQrImg" class="payment-qr" src="" alt="Booking Payment QR Code" />
+      <p>After payment, press <strong>OK</strong>.</p>
+      <div class="payment-actions">
+        <button type="button" class="pay-btn cancel" id="cancelPaymentBtn">Cancel</button>
+        <button type="button" class="pay-btn ok" id="confirmPaymentBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bookingSuccessOverlay" class="booking-success-overlay" aria-hidden="true">
+    <div class="booking-success-box">
+      <h3><i class="fas fa-circle-check"></i> Thanks for Booking!</h3>
+      <p id="bookingSuccessText">Your booking is confirmed.</p>
+    </div>
+  </div>
+
+  <section class="policy-box">
+    <h3><i class="fa-solid fa-shield-halved"></i> Booking Policies</h3>
+    <ul>
+      <li>Check-in: From 1:00 PM, Check-out: By 11:00 AM.</li>
+      <li>A valid government photo ID is mandatory at check-in.</li>
+      <li>Only INR 500 is charged online as an advance at the time of booking confirmation.</li>
+      <li>The remaining amount must be paid at the hotel property during check-in.</li>
+      <li>The INR 500 booking advance is non-refundable.</li>
+      <li>Free cancellation is allowed up to 7 days before check-in.</li>
+      <li>In case of no-show, the full booking charge will apply.</li>
+      <li>Approved refunds are processed within 7-10 working days.</li>
+      <li>Property rules must be followed; additional charges may apply for damage or loss.</li>
+    </ul>
+  </section>
 
   <!-- Contact Section -->
   <div class="section-contact">
@@ -446,7 +702,31 @@
     const availabilityGrid = document.getElementById("availabilityGrid");
     const prevMonthBtn = document.getElementById("prevMonthBtn");
     const nextMonthBtn = document.getElementById("nextMonthBtn");
+    const paymentPopup = document.getElementById("paymentPopup");
+    const paymentQrImg = document.getElementById("paymentQrImg");
+    const paymentAmountText = document.getElementById("paymentAmountText");
+    const cancelPaymentBtn = document.getElementById("cancelPaymentBtn");
+    const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
+    const bookingSuccessOverlay = document.getElementById("bookingSuccessOverlay");
+    const bookingSuccessText = document.getElementById("bookingSuccessText");
+    const accountPasswordInput = document.getElementById("accountPassword");
+    const accountPasswordField = document.getElementById("accountPasswordField");
+    const ADVANCE_PAYMENT = 500;
+    const formFields = [
+      document.getElementById("guestName"),
+      document.getElementById("phone"),
+      document.getElementById("email"),
+      accountPasswordInput,
+      document.getElementById("address"),
+      roomType,
+      guests,
+      checkIn,
+      checkOut
+    ];
     let availabilityMonth = new Date();
+    let pendingBookingData = null;
+    let pendingAccountInfo = null;
+    let isLoggedInBookingUser = false;
 
     function getTodayYMD() {
       const d = new Date();
@@ -489,10 +769,17 @@
       return JSON.parse(localStorage.getItem("trishulBookings") || "[]");
     }
 
+    function isBookingApproved(booking) {
+      if (!booking) return false;
+      if (!booking.approvalStatus) return true;
+      return String(booking.approvalStatus).toLowerCase() === "approved";
+    }
+
     function findConflict(selectedRoom, inDate, outDate) {
       const all = getBookings();
       return all.find((b) => {
         if (b.roomType !== selectedRoom) return false;
+        if (!isBookingApproved(b)) return false;
         return rangesOverlap(inDate, outDate, parseDate(b.checkIn), parseDate(b.checkOut));
       });
     }
@@ -502,6 +789,7 @@
       const all = getBookings();
       return all.some((b) => {
         if (b.roomType !== selectedRoom) return false;
+        if (!isBookingApproved(b)) return false;
         const start = parseDate(b.checkIn);
         const end = parseDate(b.checkOut);
         return dateObj >= start && dateObj < end;
@@ -565,7 +853,7 @@
         cell.addEventListener("click", () => {
           if (isPast) return;
           if (!roomType.value) {
-            showStatus("error", "Pehle room select karein, fir date choose karein.");
+            showStatus("error", "Please select a room first, then choose dates.");
             return;
           }
           clearStatus();
@@ -597,6 +885,121 @@
       statusMsg.textContent = "";
     }
 
+    function ensureFieldErrorSlot(field) {
+      const wrapper = field.parentElement;
+      if (!wrapper) return null;
+      let errorEl = wrapper.querySelector(`.field-error[data-for="${field.id}"]`);
+      if (!errorEl) {
+        errorEl = document.createElement("small");
+        errorEl.className = "field-error";
+        errorEl.dataset.for = field.id;
+        wrapper.appendChild(errorEl);
+      }
+      return errorEl;
+    }
+
+    function setFieldError(field, message) {
+      const errorEl = ensureFieldErrorSlot(field);
+      if (errorEl) errorEl.textContent = message || "";
+      field.classList.add("invalid");
+    }
+
+    function clearFieldError(field) {
+      const errorEl = ensureFieldErrorSlot(field);
+      if (errorEl) errorEl.textContent = "";
+      field.classList.remove("invalid");
+    }
+
+    function validateSingleField(field) {
+      const value = String(field.value || "").trim();
+      const label = field.closest(".field")?.querySelector("label")?.textContent || "Field";
+      let message = "";
+
+      if (field.required && !value) {
+        message = `Please fill ${label}.`;
+      } else if (field.id === "phone" && !/^[0-9]{10}$/.test(value)) {
+        message = "Mobile Number must be exactly 10 digits.";
+      } else if (field.id === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+        message = "Please enter a valid Email Address.";
+      } else if (field.id === "accountPassword" && value && value.length < 6) {
+        message = "Password must be at least 6 characters.";
+      } else if (field.id === "checkOut" && checkIn.value && value && value <= checkIn.value) {
+        message = "Check-out date must be later than check-in date.";
+      }
+
+      if (message) {
+        setFieldError(field, message);
+        return false;
+      }
+      clearFieldError(field);
+      return true;
+    }
+
+    function validateAllFields() {
+      let firstInvalid = null;
+      formFields.forEach((field) => {
+        const valid = validateSingleField(field);
+        if (!valid && !firstInvalid) firstInvalid = field;
+      });
+      return { valid: !firstInvalid, firstInvalid };
+    }
+
+    function closePaymentPopup() {
+      paymentPopup.classList.remove("show");
+      paymentPopup.setAttribute("aria-hidden", "true");
+      pendingBookingData = null;
+      pendingAccountInfo = null;
+    }
+
+    function openPaymentPopup(booking) {
+      const advanceAmount = Math.min(ADVANCE_PAYMENT, Number(booking.total || 0));
+      const qrPayload = `The Trishul Vista|Booking ${booking.id}|Advance INR ${advanceAmount}`;
+      const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(qrPayload)}`;
+      paymentAmountText.textContent = `Advance Amount: INR ${advanceAmount.toLocaleString("en-IN")} (Online)`;
+      paymentQrImg.src = qrUrl;
+      paymentPopup.classList.add("show");
+      paymentPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function finalizeBookingAfterPayment() {
+      if (!pendingBookingData) return;
+      const booking = pendingBookingData;
+      const allBookings = getBookings();
+      allBookings.push(booking);
+      localStorage.setItem("trishulBookings", JSON.stringify(allBookings));
+
+      if (pendingAccountInfo?.shouldCreate) {
+        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+        const exists = users.some((u) => String(u.email || "").toLowerCase() === String(booking.email || "").toLowerCase());
+        if (!exists) {
+          users.push({
+            name: booking.guestName || "",
+            email: booking.email || "",
+            phone: booking.phone || "",
+            address: booking.address || "",
+            password: pendingAccountInfo.password || ""
+          });
+          localStorage.setItem("registeredUsers", JSON.stringify(users));
+          localStorage.setItem("loggedInUser", JSON.stringify({ name: booking.guestName || "", email: booking.email || "" }));
+        }
+      }
+
+      bookingForm.reset();
+      clearStatus();
+      formFields.forEach(clearFieldError);
+      checkOut.min = getTodayYMD();
+      availabilityBadge.textContent = "";
+      updateSummary();
+      renderAvailabilityCalendar();
+      closePaymentPopup();
+      bookingSuccessText.textContent = `Thanks for booking! Booking ID: ${booking.id}. Request sent for admin approval. Redirecting to home page...`;
+      bookingSuccessOverlay.classList.add("show");
+      bookingSuccessOverlay.setAttribute("aria-hidden", "false");
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1800);
+    }
+
     function updateSummary() {
       const nights = getNights();
       const rate = roomRates[roomType.value] || 0;
@@ -625,19 +1028,19 @@
       const outDate = parseDate(checkOut.value);
 
       if (outDate <= inDate) {
-        availabilityBadge.textContent = "Check-out date check-in se bada hona chahiye.";
+        availabilityBadge.textContent = "Check-out date must be later than check-in date.";
         availabilityBadge.style.color = "#9f1d1d";
         return false;
       }
 
       const conflict = findConflict(roomType.value, inDate, outDate);
       if (conflict) {
-        availabilityBadge.textContent = `Not Available: Room ${conflict.checkIn} se ${conflict.checkOut} tak booked hai.`;
+        availabilityBadge.textContent = `Not Available: This room is already booked from ${conflict.checkIn} to ${conflict.checkOut}.`;
         availabilityBadge.style.color = "#9f1d1d";
         return false;
       }
 
-      availabilityBadge.textContent = "Available: Selected dates par room free hai.";
+      availabilityBadge.textContent = "Available: The room is free for the selected dates.";
       availabilityBadge.style.color = "#0f6a3f";
       return true;
     }
@@ -657,6 +1060,19 @@
 
     bookingForm.addEventListener("input", () => {
       clearStatus();
+      formFields.forEach((field) => {
+        if (field.value) validateSingleField(field);
+      });
+      updateSummary();
+      validateAvailability();
+      renderAvailabilityCalendar();
+    });
+
+    bookingForm.addEventListener("change", () => {
+      clearStatus();
+      formFields.forEach((field) => {
+        if (field.value) validateSingleField(field);
+      });
       updateSummary();
       validateAvailability();
       renderAvailabilityCalendar();
@@ -665,9 +1081,12 @@
     bookingForm.addEventListener("submit", (event) => {
       event.preventDefault();
       clearStatus();
+      pendingAccountInfo = null;
 
-      if (!bookingForm.checkValidity()) {
-        showStatus("error", "Please form ke sab required fields sahi fill karein.");
+      const formState = validateAllFields();
+      if (!formState.valid) {
+        showStatus("error", "Please fill the highlighted fields.");
+        formState.firstInvalid.focus();
         return;
       }
 
@@ -675,16 +1094,50 @@
       const inDate = parseDate(checkIn.value);
       const outDate = parseDate(checkOut.value);
       if (inDate < today) {
-        showStatus("error", "Past date booking allowed nahi hai.");
+        setFieldError(checkIn, "Past-date booking is not allowed.");
+        showStatus("error", "Past-date booking is not allowed.");
+        checkIn.focus();
         return;
       }
       if (outDate <= inDate) {
-        showStatus("error", "Check-out date check-in se bada hona chahiye.");
+        setFieldError(checkOut, "Check-out date must be later than check-in date.");
+        showStatus("error", "Check-out date must be later than check-in date.");
+        checkOut.focus();
         return;
       }
       if (!validateAvailability()) {
-        showStatus("error", "Selected room in dates par available nahi hai.");
+        showStatus("error", "The selected room is not available for these dates.");
         return;
+      }
+
+      const bookingEmail = String(document.getElementById("email").value || "").trim().toLowerCase();
+      const accountPassword = String(accountPasswordInput.value || "").trim();
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const emailRegistered = users.some((u) => String(u.email || "").toLowerCase() === bookingEmail);
+
+      if (!emailRegistered) {
+        if (isLoggedInBookingUser) {
+          clearFieldError(accountPasswordInput);
+          pendingAccountInfo = { shouldCreate: false, password: "" };
+        } else {
+          if (accountPassword.length < 6) {
+            setFieldError(accountPasswordInput, "To create an account, password must be at least 6 characters.");
+            showStatus("error", "Please set a password to create your account.");
+            accountPasswordInput.focus();
+            return;
+          }
+          clearFieldError(accountPasswordInput);
+          pendingAccountInfo = { shouldCreate: true, password: accountPassword };
+        }
+      } else {
+        if (accountPassword && accountPassword.length < 6) {
+          setFieldError(accountPasswordInput, "Password must be at least 6 characters.");
+          showStatus("error", "Please enter a valid password or leave this field empty.");
+          accountPasswordInput.focus();
+          return;
+        }
+        clearFieldError(accountPasswordInput);
+        pendingAccountInfo = { shouldCreate: false, password: "" };
       }
 
       const rate = roomRates[roomType.value];
@@ -699,11 +1152,21 @@
       }
       const total = roomCharge;
 
+      const allBookings = getBookings();
+      const maxBookingNo = allBookings.reduce((max, b) => {
+        const num = Number(b.bookingNo || 0);
+        return num > max ? num : max;
+      }, 0);
+      const nextBookingNo = maxBookingNo + 1;
+      const createdAt = Date.now();
+
       const booking = {
+        bookingNo: nextBookingNo,
         id: `TV-${Date.now()}`,
         guestName: document.getElementById("guestName").value.trim(),
         phone: document.getElementById("phone").value.trim(),
         email: document.getElementById("email").value.trim(),
+        address: document.getElementById("address").value.trim(),
         roomType: roomType.value,
         guests: guestCount,
         checkIn: checkIn.value,
@@ -711,23 +1174,28 @@
         specialRequest: document.getElementById("specialRequest").value.trim(),
         nights,
         offerDiscount,
-        total
+        total,
+        createdAt
       };
 
-      booking.paymentStatus = "Confirmed";
-      booking.paymentMethod = "N/A";
+      const advancePaid = Math.min(ADVANCE_PAYMENT, total);
+      booking.advancePaid = advancePaid;
+      booking.balanceDue = Math.max(total - advancePaid, 0);
+      booking.paymentStatus = "Advance Paid";
+      booking.paymentMethod = "QR";
       booking.paymentAt = new Date().toISOString();
+      booking.approvalStatus = "Pending";
+      booking.approvedAt = "";
 
-      const allBookings = getBookings();
-      allBookings.push(booking);
-      localStorage.setItem("trishulBookings", JSON.stringify(allBookings));
+      pendingBookingData = booking;
+      openPaymentPopup(booking);
+    });
 
-      bookingForm.reset();
-      checkOut.min = getTodayYMD();
-      availabilityBadge.textContent = "";
-      updateSummary();
-      renderAvailabilityCalendar();
-      showStatus("success", `Booking confirmed! Your Booking ID is ${booking.id}.`);
+    cancelPaymentBtn.addEventListener("click", closePaymentPopup);
+    confirmPaymentBtn.addEventListener("click", finalizeBookingAfterPayment);
+
+    paymentPopup.addEventListener("click", (event) => {
+      if (event.target.id === "paymentPopup") closePaymentPopup();
     });
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -767,12 +1235,25 @@
       const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
       if (loggedInUser) {
+        isLoggedInBookingUser = true;
         userGreeting.style.display = "inline";
         logoutLink.style.display = "inline";
         userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
         if (loginLink) loginLink.style.display = "none";
         if (registerLink) registerLink.style.display = "none";
-        document.getElementById("guestName").value = loggedInUser.name || "";
+
+        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+        const userProfile = users.find((u) => String(u.email || "").toLowerCase() === String(loggedInUser.email || "").toLowerCase());
+        const source = userProfile || loggedInUser;
+
+        document.getElementById("guestName").value = source.name || "";
+        document.getElementById("phone").value = source.phone || "";
+        document.getElementById("email").value = source.email || loggedInUser.email || "";
+        document.getElementById("address").value = source.address || "";
+
+        accountPasswordField.style.display = "none";
+        accountPasswordInput.value = "";
+        clearFieldError(accountPasswordInput);
       }
     });
 
@@ -807,6 +1288,12 @@
 
     window.addEventListener("resize", function () {
       if (window.innerWidth > 768) closeMobileMenu();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && paymentPopup.classList.contains("show")) {
+        closePaymentPopup();
+      }
     });
 
     function logout() {
