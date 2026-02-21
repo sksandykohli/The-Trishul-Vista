@@ -367,7 +367,17 @@
     const tabs = document.querySelectorAll(".auth-tab");
     const panels = document.querySelectorAll(".auth-panel");
     const ADMIN_EMAIL = "admin@trishulvista.com";
-    const ADMIN_PASSWORD = "Admin@123";
+    const ADMIN_PASSWORD_DEFAULT = "Admin@123";
+    const ADMIN_PASSWORD_KEY = "trishulAdminPassword";
+
+    function getAdminPassword() {
+      const fromStorage = localStorage.getItem(ADMIN_PASSWORD_KEY);
+      if (!fromStorage) {
+        localStorage.setItem(ADMIN_PASSWORD_KEY, ADMIN_PASSWORD_DEFAULT);
+        return ADMIN_PASSWORD_DEFAULT;
+      }
+      return fromStorage;
+    }
 
     function showTab(tabId) {
       tabs.forEach((t) => t.classList.toggle("active", t.dataset.tab === tabId));
@@ -463,7 +473,7 @@
 
       if (hasError) return;
 
-      if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
+      if (email === ADMIN_EMAIL && password === getAdminPassword()) {
         localStorage.setItem("adminSession", JSON.stringify({ email: ADMIN_EMAIL, at: Date.now() }));
         showAuthMsg(msg, "success", "Admin login successful. Redirecting...");
         setTimeout(() => {

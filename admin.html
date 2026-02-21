@@ -150,6 +150,21 @@
       color: #fff;
       border-color: #0f2f52;
     }
+    .booking-filter-tab .tab-notify {
+      margin-left: 6px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: #d64545;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 0 5px;
+      line-height: 1;
+    }
 
     .panel-title {
       margin: 0 0 10px;
@@ -371,6 +386,35 @@
       font-size: 1.35rem;
     }
 
+    .admin-reset-wrap {
+      margin-top: 12px;
+      border-top: 1px solid #dce8f3;
+      padding-top: 12px;
+    }
+
+    .admin-reset-toggle {
+      width: 100%;
+      border: 1px solid #dce8f3;
+      background: #f8fbff;
+      color: #1f4068;
+      border-radius: 8px;
+      padding: 9px 11px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .admin-reset-form {
+      display: none;
+      margin-top: 10px;
+      gap: 8px;
+    }
+
+    .admin-reset-form.show {
+      display: grid;
+    }
+
     .admin-actions-top {
       margin-top: 8px;
       display: flex;
@@ -516,6 +560,28 @@
         </div>
         <button class="dash-btn primary" style="width:100%;margin-top:10px;" type="button" onclick="adminLogin()">Login as Admin</button>
         <p id="adminLoginMsg" class="admin-msg"></p>
+
+        <div class="admin-reset-wrap">
+          <button type="button" class="admin-reset-toggle" onclick="toggleResetPasswordForm()">
+            <i class="fas fa-key"></i> Reset Admin Password
+          </button>
+          <form id="adminResetForm" class="admin-reset-form" novalidate>
+            <div class="field">
+              <label for="currentAdminPassword">Current Password</label>
+              <input id="currentAdminPassword" type="password" required />
+            </div>
+            <div class="field">
+              <label for="newAdminPassword">New Password</label>
+              <input id="newAdminPassword" type="password" minlength="6" required />
+            </div>
+            <div class="field">
+              <label for="confirmAdminPassword">Confirm New Password</label>
+              <input id="confirmAdminPassword" type="password" minlength="6" required />
+            </div>
+            <button class="dash-btn primary" type="submit" style="width:100%;">Update Password</button>
+            <p id="adminResetMsg" class="admin-msg"></p>
+          </form>
+        </div>
       </article>
     </section>
 
@@ -555,7 +621,7 @@
           <h3 class="panel-title">Bookings</h3>
           <div class="booking-filter-switch">
             <button class="booking-filter-tab active" type="button" data-booking-filter="today">Today Booking</button>
-            <button class="booking-filter-tab" type="button" data-booking-filter="next">Next Day Booking</button>
+            <button class="booking-filter-tab" type="button" data-booking-filter="next">Next Day Booking <span id="nextBookingNotify" class="tab-notify" style="display:none;">0</span></button>
             <button class="booking-filter-tab" type="button" data-booking-filter="past">Past Booking</button>
           </div>
           <div id="bookingsPanel" class="list"></div>
@@ -566,25 +632,6 @@
         </section>
       </article>
 
-      <article class="admin-card">
-        <h3 class="insight-head">Visitor Counter & User Insights</h3>
-        <section class="insight-grid">
-          <article class="insight-box"><p class="insight-label">Total Site Visits</p><p class="insight-value" id="vTotalVisits">0</p></article>
-          <article class="insight-box"><p class="insight-label">Unique Visitors</p><p class="insight-value" id="vUniqueVisitors">0</p></article>
-          <article class="insight-box"><p class="insight-label">Today's Visits</p><p class="insight-value" id="vTodayVisits">0</p></article>
-          <article class="insight-box"><p class="insight-label">Returning Visitors</p><p class="insight-value" id="vReturning">0</p></article>
-        </section>
-        <section class="insight-sections">
-          <article class="insight-panel">
-            <h4>Top Visited Pages</h4>
-            <ul class="insight-list" id="topPagesList"></ul>
-          </article>
-          <article class="insight-panel">
-            <h4>User Snapshot</h4>
-            <ul class="insight-list" id="userInsightsList"></ul>
-          </article>
-        </section>
-      </article>
     </section>
   </main>
 
@@ -605,11 +652,14 @@
 
   <script>
     const ADMIN_EMAIL = "admin@trishulvista.com";
-    const ADMIN_PASSWORD = "Admin@123";
+    const ADMIN_PASSWORD_DEFAULT = "Admin@123";
+    const ADMIN_PASSWORD_KEY = "trishulAdminPassword";
 
     const adminLoginView = document.getElementById("adminLoginView");
     const adminDashboardView = document.getElementById("adminDashboardView");
     const adminLoginMsg = document.getElementById("adminLoginMsg");
+    const adminResetMsg = document.getElementById("adminResetMsg");
+    const adminResetForm = document.getElementById("adminResetForm");
     const adminMsg = document.getElementById("adminMsg");
     const bookingsPanel = document.getElementById("bookingsPanel");
     const usersPanel = document.getElementById("usersPanel");
@@ -618,30 +668,27 @@
     const bookingFilterTabs = document.querySelectorAll(".booking-filter-tab");
     const bookingsPanelWrap = document.getElementById("bookingsPanelWrap");
     const usersPanelWrap = document.getElementById("usersPanelWrap");
-    const topPagesList = document.getElementById("topPagesList");
-    const userInsightsList = document.getElementById("userInsightsList");
+    const nextBookingNotify = document.getElementById("nextBookingNotify");
     const confirmPopup = document.getElementById("confirmPopup");
     const confirmPopupText = document.getElementById("confirmPopupText");
+    const NEXT_BOOKING_NOTIFY_SEEN_KEY = "trishulAdminNextBookingNotifySeenAt";
     let currentBookingFilter = "today";
     let confirmAction = null;
 
-    function getAnalytics() {
-      const raw = JSON.parse(localStorage.getItem("trishulVisitorAnalytics") || "{}");
-      return {
-        totalVisits: Number(raw.totalVisits || 0),
-        uniqueVisitors: raw.uniqueVisitors || {},
-        dailyVisits: raw.dailyVisits || {},
-        pageVisits: raw.pageVisits || {},
-        lastVisitAt: raw.lastVisitAt || null
-      };
+    function getAdminPassword() {
+      const fromStorage = localStorage.getItem(ADMIN_PASSWORD_KEY);
+      if (!fromStorage) {
+        localStorage.setItem(ADMIN_PASSWORD_KEY, ADMIN_PASSWORD_DEFAULT);
+        return ADMIN_PASSWORD_DEFAULT;
+      }
+      return fromStorage;
     }
 
-    function formatDateTime(ts) {
-      if (!ts) return "-";
-      const d = new Date(ts);
-      if (Number.isNaN(d.getTime())) return "-";
-      return d.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
+    function toggleResetPasswordForm() {
+      clearMsg(adminResetMsg);
+      adminResetForm.classList.toggle("show");
     }
+    window.toggleResetPasswordForm = toggleResetPasswordForm;
 
     function showMsg(el, type, text) {
       el.className = `admin-msg ${type}`;
@@ -696,79 +743,38 @@
       document.getElementById("sRevenue").textContent = `INR ${revenue.toLocaleString("en-IN")}`;
     }
 
-    function refreshVisitorInsights() {
-      const analytics = getAnalytics();
-      const today = new Date().toISOString().slice(0, 10);
-      const uniqueVisitorMap = analytics.uniqueVisitors;
-      const uniqueIds = Object.keys(uniqueVisitorMap);
-      const returningCount = uniqueIds.filter((id) => Number(uniqueVisitorMap[id].visits || 0) > 1).length;
+    function parseLocalDate(value) {
+      if (!value) return null;
+      const parts = String(value).split("-").map(Number);
+      if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+      const [year, month, day] = parts;
+      const dt = new Date(year, month - 1, day);
+      dt.setHours(0, 0, 0, 0);
+      return Number.isNaN(dt.getTime()) ? null : dt;
+    }
 
-      document.getElementById("vTotalVisits").textContent = String(analytics.totalVisits);
-      document.getElementById("vUniqueVisitors").textContent = String(uniqueIds.length);
-      document.getElementById("vTodayVisits").textContent = String(Number(analytics.dailyVisits[today] || 0));
-      document.getElementById("vReturning").textContent = String(returningCount);
+    function updateNextBookingNotification() {
+      if (!nextBookingNotify) return;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const seenAt = Number(localStorage.getItem(NEXT_BOOKING_NOTIFY_SEEN_KEY) || 0);
+      const newNextBookingsCount = getBookings().filter((b) => {
+        const checkInDate = parseLocalDate(b.checkIn);
+        const createdAt = Number(b.createdAt || String(b.id || "").replace("TV-", "") || 0);
+        return !!checkInDate && checkInDate > today && createdAt > seenAt;
+      }).length;
 
-      const topPages = Object.entries(analytics.pageVisits)
-        .sort((a, b) => Number(b[1]) - Number(a[1]))
-        .slice(0, 4);
-      topPagesList.innerHTML = "";
-      if (!topPages.length) {
-        topPagesList.innerHTML = `<li>No page visit data yet.</li>`;
+      if (newNextBookingsCount > 0) {
+        nextBookingNotify.style.display = "inline-flex";
+        nextBookingNotify.textContent = String(newNextBookingsCount);
       } else {
-        topPages.forEach(([page, count]) => {
-          const li = document.createElement("li");
-          li.textContent = `${page}: ${count} visits`;
-          topPagesList.appendChild(li);
-        });
+        nextBookingNotify.style.display = "none";
       }
-
-      const users = getUsers();
-      const bookings = getBookings();
-      const bookingByEmail = {};
-      bookings.forEach((b) => {
-        const key = String(b.email || "").toLowerCase();
-        if (!key) return;
-        bookingByEmail[key] = Number(bookingByEmail[key] || 0) + 1;
-      });
-
-      const usersWithBooking = users.filter((u) => bookingByEmail[String(u.email || "").toLowerCase()]).length;
-      let topBooker = "-";
-      let maxBookings = 0;
-      Object.keys(bookingByEmail).forEach((email) => {
-        const count = bookingByEmail[email];
-        if (count > maxBookings) {
-          maxBookings = count;
-          topBooker = `${email} (${count})`;
-        }
-      });
-
-      userInsightsList.innerHTML = "";
-      const snapshotItems = [
-        `Registered users: ${users.length}`,
-        `Users with booking: ${usersWithBooking}`,
-        `Top booking user: ${topBooker}`,
-        `Last visit recorded: ${formatDateTime(analytics.lastVisitAt)}`
-      ];
-      snapshotItems.forEach((text) => {
-        const li = document.createElement("li");
-        li.textContent = text;
-        userInsightsList.appendChild(li);
-      });
     }
 
     function renderBookings() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-
-      const parseLocalDate = (value) => {
-        if (!value) return null;
-        const parts = String(value).split("-").map(Number);
-        if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
-        const [year, month, day] = parts;
-        const dt = new Date(year, month - 1, day);
-        dt.setHours(0, 0, 0, 0);
-        return Number.isNaN(dt.getTime()) ? null : dt;
-      };
 
       const q = (searchInput.value || "").trim().toLowerCase();
       const bookings = getBookings().filter((b) => {
@@ -1005,7 +1011,7 @@
       refreshStats();
       renderBookings();
       renderUsers();
-      refreshVisitorInsights();
+      updateNextBookingNotification();
     }
 
     function switchPanel(panelId) {
@@ -1021,22 +1027,19 @@
       const email = document.getElementById("adminEmail").value.trim().toLowerCase();
       const password = document.getElementById("adminPassword").value;
       if (!email || !password) {
-        showMsg(adminLoginMsg, "error", "Please email and password fill karein.");
+        showMsg(adminLoginMsg, "error", "Please enter email and password.");
         return;
       }
-      if (email !== ADMIN_EMAIL || password !== ADMIN_PASSWORD) {
+      if (email !== ADMIN_EMAIL || password !== getAdminPassword()) {
         showMsg(adminLoginMsg, "error", "Invalid admin credentials.");
         return;
       }
-
-      localStorage.setItem("adminSession", JSON.stringify({ email, at: Date.now() }));
       adminLoginView.style.display = "none";
       adminDashboardView.style.display = "grid";
       refreshAdminData();
     }
 
     function adminLogout() {
-      localStorage.removeItem("adminSession");
       window.location.href = "index.html";
     }
 
@@ -1055,6 +1058,10 @@
         bookingFilterTabs.forEach((btn) => {
           btn.classList.toggle("active", btn === tab);
         });
+        if (currentBookingFilter === "next") {
+          localStorage.setItem(NEXT_BOOKING_NOTIFY_SEEN_KEY, String(Date.now()));
+        }
+        updateNextBookingNotification();
         renderBookings();
       });
     });
@@ -1118,49 +1125,38 @@ document.addEventListener("DOMContentLoaded", () => {
         if (loginLink) loginLink.style.display = "none";
       }
 
-      const adminSession = JSON.parse(localStorage.getItem("adminSession") || "null");
-      if (adminSession && adminSession.email === ADMIN_EMAIL) {
-        adminLoginView.style.display = "none";
-        adminDashboardView.style.display = "grid";
-        refreshAdminData();
-      }
+      getAdminPassword();
     });
-  
-    (function trackSiteVisit() {
-      const analyticsKey = "trishulVisitorAnalytics";
-      const visitorIdKey = "trishulVisitorId";
-      const now = Date.now();
-      const today = new Date().toISOString().slice(0, 10);
-      const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
-      let analytics = JSON.parse(localStorage.getItem(analyticsKey) || "{}");
-      if (!analytics || typeof analytics !== "object") analytics = {};
+    adminResetForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      clearMsg(adminResetMsg);
 
-      analytics.totalVisits = Number(analytics.totalVisits || 0) + 1;
-      analytics.dailyVisits = analytics.dailyVisits || {};
-      analytics.dailyVisits[today] = Number(analytics.dailyVisits[today] || 0) + 1;
-      analytics.pageVisits = analytics.pageVisits || {};
-      analytics.pageVisits[currentPage] = Number(analytics.pageVisits[currentPage] || 0) + 1;
+      const current = document.getElementById("currentAdminPassword").value;
+      const next = document.getElementById("newAdminPassword").value;
+      const confirm = document.getElementById("confirmAdminPassword").value;
 
-      let visitorId = localStorage.getItem(visitorIdKey);
-      if (!visitorId) {
-        visitorId = `V-${Math.random().toString(36).slice(2, 8)}-${Date.now()}`;
-        localStorage.setItem(visitorIdKey, visitorId);
+      if (!current || !next || !confirm) {
+        showMsg(adminResetMsg, "error", "Please fill all password fields.");
+        return;
+      }
+      if (current !== getAdminPassword()) {
+        showMsg(adminResetMsg, "error", "Current password is incorrect.");
+        return;
+      }
+      if (next.length < 6) {
+        showMsg(adminResetMsg, "error", "New password must be at least 6 characters.");
+        return;
+      }
+      if (next !== confirm) {
+        showMsg(adminResetMsg, "error", "New password and confirm password do not match.");
+        return;
       }
 
-      analytics.uniqueVisitors = analytics.uniqueVisitors || {};
-      const existingVisitor = analytics.uniqueVisitors[visitorId] || {
-        firstSeen: now,
-        lastSeen: now,
-        visits: 0
-      };
-      existingVisitor.lastSeen = now;
-      existingVisitor.visits = Number(existingVisitor.visits || 0) + 1;
-      analytics.uniqueVisitors[visitorId] = existingVisitor;
-      analytics.lastVisitAt = now;
-
-      localStorage.setItem(analyticsKey, JSON.stringify(analytics));
-    })();
+      localStorage.setItem(ADMIN_PASSWORD_KEY, next);
+      showMsg(adminResetMsg, "success", "Admin password updated successfully.");
+      adminResetForm.reset();
+    });
 </script>
 </body>
 </html>

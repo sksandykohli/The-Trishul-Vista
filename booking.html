@@ -540,11 +540,6 @@
               <div class="field">
                 <label for="email">Email Address<span class="req-star">*</span></label>
                 <input id="email" name="email" type="email" required />
-                <div id="accountPasswordField">
-                  <label for="accountPassword">Password (Create Account)</label>
-                  <input id="accountPassword" name="accountPassword" type="password" minlength="6" autocomplete="new-password" placeholder="Minimum 6 characters" />
-                  <p class="field-help">If this email is not registered, an account will be created using this password.</p>
-                </div>
               </div>
               <div class="field">
                 <label for="address">Address<span class="req-star">*</span></label>
@@ -644,7 +639,7 @@
   <section class="policy-box">
     <h3><i class="fa-solid fa-shield-halved"></i> Booking Policies</h3>
     <ul>
-      <li>Check-in: From 1:00 PM, Check-out: By 11:00 AM.</li>
+      <li>Check-in: From 12:00 PM, Check-out: By 11:00 AM.</li>
       <li>A valid government photo ID is mandatory at check-in.</li>
       <li>Only INR 500 is charged online as an advance at the time of booking confirmation.</li>
       <li>The remaining amount must be paid at the hotel property during check-in.</li>
@@ -706,14 +701,11 @@
     const confirmPaymentBtn = document.getElementById("confirmPaymentBtn");
     const bookingSuccessOverlay = document.getElementById("bookingSuccessOverlay");
     const bookingSuccessText = document.getElementById("bookingSuccessText");
-    const accountPasswordInput = document.getElementById("accountPassword");
-    const accountPasswordField = document.getElementById("accountPasswordField");
     const ADVANCE_PAYMENT = 500;
     const formFields = [
       document.getElementById("guestName"),
       document.getElementById("phone"),
       document.getElementById("email"),
-      accountPasswordInput,
       document.getElementById("address"),
       roomType,
       guests,
@@ -722,8 +714,6 @@
     ];
     let availabilityMonth = new Date();
     let pendingBookingData = null;
-    let pendingAccountInfo = null;
-    let isLoggedInBookingUser = false;
 
     function getTodayYMD() {
       const d = new Date();
@@ -741,6 +731,22 @@
       const m = String(dateObj.getMonth() + 1).padStart(2, "0");
       const d = String(dateObj.getDate()).padStart(2, "0");
       return `${y}-${m}-${d}`;
+    }
+
+    function getDateCodeFromTimestamp(timestamp) {
+      const dt = new Date(timestamp);
+      const y = dt.getFullYear();
+      const m = String(dt.getMonth() + 1).padStart(2, "0");
+      const d = String(dt.getDate()).padStart(2, "0");
+      return `${y}${m}${d}`;
+    }
+
+    function generateBookingId(existingBookings, createdAt) {
+      const dateCode = getDateCodeFromTimestamp(createdAt);
+      const prefix = `TV-${dateCode}-`;
+      const sameDayCount = existingBookings.filter((b) => String(b.id || "").startsWith(prefix)).length;
+      const serial = String(sameDayCount + 1).padStart(3, "0");
+      return `${prefix}${serial}`;
     }
 
     function getNights() {
@@ -918,8 +924,6 @@
         message = "Mobile Number must be exactly 10 digits.";
       } else if (field.id === "email" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
         message = "Please enter a valid Email Address.";
-      } else if (field.id === "accountPassword" && value && value.length < 6) {
-        message = "Password must be at least 6 characters.";
       } else if (field.id === "checkOut" && checkIn.value && value && value <= checkIn.value) {
         message = "Check-out date must be later than check-in date.";
       }
@@ -945,7 +949,6 @@
       paymentPopup.classList.remove("show");
       paymentPopup.setAttribute("aria-hidden", "true");
       pendingBookingData = null;
-      pendingAccountInfo = null;
     }
 
     function openPaymentPopup(booking) {
@@ -965,20 +968,18 @@
       allBookings.push(booking);
       localStorage.setItem("trishulBookings", JSON.stringify(allBookings));
 
-      if (pendingAccountInfo?.shouldCreate) {
-        const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
-        const exists = users.some((u) => String(u.email || "").toLowerCase() === String(booking.email || "").toLowerCase());
-        if (!exists) {
-          users.push({
-            name: booking.guestName || "",
-            email: booking.email || "",
-            phone: booking.phone || "",
-            address: booking.address || "",
-            password: pendingAccountInfo.password || ""
-          });
-          localStorage.setItem("registeredUsers", JSON.stringify(users));
-          localStorage.setItem("loggedInUser", JSON.stringify({ name: booking.guestName || "", email: booking.email || "" }));
-        }
+      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
+      const exists = users.some((u) => String(u.email || "").toLowerCase() === String(booking.email || "").toLowerCase());
+      if (!exists) {
+        users.push({
+          name: booking.guestName || "",
+          email: booking.email || "",
+          phone: booking.phone || "",
+          address: booking.address || "",
+          password: booking.phone || ""
+        });
+        localStorage.setItem("registeredUsers", JSON.stringify(users));
+        localStorage.setItem("loggedInUser", JSON.stringify({ name: booking.guestName || "", email: booking.email || "" }));
       }
 
       bookingForm.reset();
@@ -989,7 +990,7 @@
       updateSummary();
       renderAvailabilityCalendar();
       closePaymentPopup();
-      bookingSuccessText.textContent = `Thanks for booking! Booking ID: ${booking.id}. Request sent for admin approval. Redirecting to home page...`;
+      bookingSuccessText.textContent = `Thanks for booking! Booking ID: ${booking.id}. Your booking is confirmed. Redirecting to home page...`;
       bookingSuccessOverlay.classList.add("show");
       bookingSuccessOverlay.setAttribute("aria-hidden", "false");
       setTimeout(() => {
@@ -1078,7 +1079,6 @@
     bookingForm.addEventListener("submit", (event) => {
       event.preventDefault();
       clearStatus();
-      pendingAccountInfo = null;
 
       const formState = validateAllFields();
       if (!formState.valid) {
@@ -1107,36 +1107,6 @@
         return;
       }
 
-      const bookingEmail = String(document.getElementById("email").value || "").trim().toLowerCase();
-      const accountPassword = String(accountPasswordInput.value || "").trim();
-      const users = JSON.parse(localStorage.getItem("registeredUsers") || "[]");
-      const emailRegistered = users.some((u) => String(u.email || "").toLowerCase() === bookingEmail);
-
-      if (!emailRegistered) {
-        if (isLoggedInBookingUser) {
-          clearFieldError(accountPasswordInput);
-          pendingAccountInfo = { shouldCreate: false, password: "" };
-        } else {
-          if (accountPassword.length < 6) {
-            setFieldError(accountPasswordInput, "To create an account, password must be at least 6 characters.");
-            showStatus("error", "Please set a password to create your account.");
-            accountPasswordInput.focus();
-            return;
-          }
-          clearFieldError(accountPasswordInput);
-          pendingAccountInfo = { shouldCreate: true, password: accountPassword };
-        }
-      } else {
-        if (accountPassword && accountPassword.length < 6) {
-          setFieldError(accountPasswordInput, "Password must be at least 6 characters.");
-          showStatus("error", "Please enter a valid password or leave this field empty.");
-          accountPasswordInput.focus();
-          return;
-        }
-        clearFieldError(accountPasswordInput);
-        pendingAccountInfo = { shouldCreate: false, password: "" };
-      }
-
       const rate = roomRates[roomType.value];
       const nights = getNights();
       const guestCount = Number(guests.value);
@@ -1156,10 +1126,11 @@
       }, 0);
       const nextBookingNo = maxBookingNo + 1;
       const createdAt = Date.now();
+      const bookingId = generateBookingId(allBookings, createdAt);
 
       const booking = {
         bookingNo: nextBookingNo,
-        id: `TV-${Date.now()}`,
+        id: bookingId,
         guestName: document.getElementById("guestName").value.trim(),
         phone: document.getElementById("phone").value.trim(),
         email: document.getElementById("email").value.trim(),
@@ -1181,8 +1152,8 @@
       booking.paymentStatus = "Advance Paid";
       booking.paymentMethod = "QR";
       booking.paymentAt = new Date().toISOString();
-      booking.approvalStatus = "Pending";
-      booking.approvedAt = "";
+      booking.approvalStatus = "Approved";
+      booking.approvedAt = new Date().toISOString();
 
       pendingBookingData = booking;
       openPaymentPopup(booking);
@@ -1232,7 +1203,6 @@
       const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
 
       if (loggedInUser) {
-        isLoggedInBookingUser = true;
         userGreeting.style.display = "inline";
         logoutLink.style.display = "inline";
         userGreeting.innerHTML = `<i class="fa fa-user"></i> <a href="dashboard.html" style="color: white; text-decoration: none;">Hello, ${loggedInUser.name}</a>`;
@@ -1247,10 +1217,6 @@
         document.getElementById("phone").value = source.phone || "";
         document.getElementById("email").value = source.email || loggedInUser.email || "";
         document.getElementById("address").value = source.address || "";
-
-        accountPasswordField.style.display = "none";
-        accountPasswordInput.value = "";
-        clearFieldError(accountPasswordInput);
       }
     });
 

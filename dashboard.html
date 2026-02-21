@@ -561,7 +561,7 @@
     let currentUser = null;
     let pendingCancelBookingId = null;
     let profileEditMode = false;
-    let currentBookingsTab = "current";
+    let currentBookingsTab = "my";
 
     function showDashMsg(type, text) {
       dashMsg.className = `dash-msg ${type}`;
@@ -621,14 +621,18 @@
 
     function renderBookings(bookings) {
       const sorted = [...bookings].sort((a, b) => parseDate(b.checkIn) - parseDate(a.checkIn));
-      const grouped = { upcoming: [], current: [], past: [] };
+      const grouped = { my: [], past: [] };
       sorted.forEach((b) => {
-        grouped[getBookingPhase(b)].push(b);
+        const phase = getBookingPhase(b);
+        if (phase === "past") {
+          grouped.past.push(b);
+          return;
+        }
+        grouped.my.push(b);
       });
 
       const tabDefs = [
-        { key: "current", label: "Today", empty: "No today stay bookings." },
-        { key: "upcoming", label: "Upcoming", empty: "No upcoming bookings." },
+        { key: "my", label: "My Booking", empty: "No active bookings." },
         { key: "past", label: "Past", empty: "No past bookings." }
       ];
 
@@ -641,7 +645,7 @@
 
       bookingTabs.querySelectorAll(".my-booking-tab").forEach((btn) => {
         btn.addEventListener("click", () => {
-          currentBookingsTab = btn.dataset.bookingTab || "current";
+          currentBookingsTab = btn.dataset.bookingTab || "my";
           renderBookings(getUserBookings());
         });
       });
