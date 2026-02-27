@@ -273,6 +273,42 @@
       justify-content: flex-end;
     }
 
+    .bookings-table-wrap {
+      border: 1px solid #e0ebf5;
+      border-radius: 10px;
+      overflow-x: auto;
+      background: #fbfdff;
+    }
+
+    .bookings-table {
+      width: 100%;
+      min-width: 1050px;
+      border-collapse: collapse;
+      color: #334e68;
+      font-size: 0.86rem;
+    }
+
+    .bookings-table th,
+    .bookings-table td {
+      border-bottom: 1px solid #e6eff7;
+      padding: 10px 9px;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .bookings-table th {
+      background: #f2f8ff;
+      color: #0f2f52;
+      font-weight: 800;
+      font-size: 0.8rem;
+      letter-spacing: 0.2px;
+    }
+
+    .bookings-table tbody tr:hover {
+      background: #f7fbff;
+    }
+
     .stay-badge {
       padding: 4px 10px;
       border-radius: 999px;
@@ -562,6 +598,7 @@
     let pendingCancelBookingId = null;
     let profileEditMode = false;
     let currentBookingsTab = "my";
+    const BOOKING_CONFIRM_SEEN_PREFIX = "trishulBookingConfirmSeenAt:";
 
     function showDashMsg(type, text) {
       dashMsg.className = `dash-msg ${type}`;
@@ -599,6 +636,28 @@
       return String(booking.approvalStatus).toLowerCase() === "approved";
     }
 
+    function checkForNewConfirmations(bookings) {
+      if (!currentUser?.email) return;
+      const key = `${BOOKING_CONFIRM_SEEN_PREFIX}${String(currentUser.email).toLowerCase()}`;
+      const seenAt = Number(localStorage.getItem(key) || 0);
+
+      const newlyConfirmed = bookings
+        .filter((b) => isApprovedBooking(b))
+        .map((b) => ({ id: b.id || "-", at: Date.parse(b.approvedAt || "") }))
+        .filter((x) => Number.isFinite(x.at) && x.at > seenAt)
+        .sort((a, b) => b.at - a.at);
+
+      if (!newlyConfirmed.length) return;
+
+      const latest = newlyConfirmed[0];
+      const msg =
+        newlyConfirmed.length === 1
+          ? `Admin confirmed your booking (${latest.id}).`
+          : `Admin confirmed ${newlyConfirmed.length} bookings. Latest: ${latest.id}.`;
+      showDashMsg("success", msg);
+      localStorage.setItem(key, String(latest.at));
+    }
+
     function getUserBookings() {
       const allBookings = JSON.parse(localStorage.getItem("trishulBookings") || "[]");
       if (!currentUser?.email) return [];
@@ -610,7 +669,7 @@
         const phase = getBookingPhase(b);
         return phase === "upcoming" || phase === "current";
       }).length;
-      const paid = bookings.filter((b) => (b.paymentStatus || "").toLowerCase() === "paid").length;
+      const paid = bookings.filter((b) => isApprovedBooking(b)).length;
       const spent = bookings.reduce((sum, b) => sum + Number(b.total || 0), 0);
 
       document.getElementById("statTotal").textContent = String(bookings.length);
@@ -663,39 +722,62 @@
         return;
       }
 
-      list.forEach((b) => {
-        const paymentStatus = (b.paymentStatus || "Pending").toLowerCase();
-        const phase = getBookingPhase(b);
-        const phaseText = phase === "past" ? "Past" : phase === "current" ? "Today Stay" : "Upcoming";
-        const approved = isApprovedBooking(b);
-        const cancelDisabled = phase === "past" || approved;
-        const cancelTitle = approved ? "Approved bookings cannot be canceled." : "";
-        const item = document.createElement("article");
-        item.className = "booking-item";
-        item.innerHTML = `
-          <div class="booking-top">
-            <p class="booking-id">Booking ID: ${b.id || "-"}</p>
-            <div style="display:flex; gap:6px; flex-wrap:wrap;">
-              <span class="stay-badge ${phase}">${phaseText}</span>
-              <span class="badge ${paymentStatus === "paid" ? "paid" : "pending"}">${paymentStatus === "paid" ? "Paid" : "Pending"}</span>
-            </div>
-          </div>
-          <div class="booking-grid">
-            <p><strong>Room:</strong> ${b.roomType || "-"}</p>
-            <p><strong>Guests:</strong> ${b.guests || "-"}</p>
-            <p><strong>Nights:</strong> ${b.nights || "-"}</p>
-            <p><strong>Check-in:</strong> ${b.checkIn || "-"}</p>
-            <p><strong>Check-out:</strong> ${b.checkOut || "-"}</p>
-            <p><strong>Total:</strong> INR ${Number(b.total || 0).toLocaleString("en-IN")}</p>
-          </div>
-          <div class="booking-actions">
-            <button type="button" class="cancel-btn" data-id="${b.id || ""}" ${cancelDisabled ? "disabled" : ""} title="${cancelTitle}"><i class="fas fa-xmark"></i> Cancel Booking</button>
-          </div>
-        `;
-        bookingsList.appendChild(item);
-      });
+      const rows = list
+        .map((b) => {
+          const paymentApproved = isApprovedBooking(b);
+          const paymentText = paymentApproved ? "Confirmed" : "Pending";
+          const phase = getBookingPhase(b);
+          const phaseText = phase === "past" ? "Past" : phase === "current" ? "Today Stay" : "Upcoming";
+          const approved = isApprovedBooking(b);
+          const cancelDisabled = phase === "past" || approved;
+          const cancelTitle = approved ? "Approved bookings cannot be canceled." : "";
+          const totalAmount = Number(b.total || 0);
+          const advancePaid = Number(b.advancePaid || Math.min(500, totalAmount));
+          const balanceDue = Number(b.balanceDue ?? Math.max(totalAmount - advancePaid, 0));
+          return `
+            <tr>
+              <td>${b.id || "-"}</td>
+              <td><span class="stay-badge ${phase}">${phaseText}</span></td>
+              <td>${b.roomType || "-"}</td>
+              <td>${b.guests || "-"}</td>
+              <td>${b.checkIn || "-"}</td>
+              <td>${b.checkOut || "-"}</td>
+              <td>${b.nights || "-"}</td>
+              <td>INR ${totalAmount.toLocaleString("en-IN")}</td>
+              <td>INR ${advancePaid.toLocaleString("en-IN")}</td>
+              <td>INR ${balanceDue.toLocaleString("en-IN")}</td>
+              <td><span class="badge ${paymentApproved ? "paid" : "pending"}">${paymentText}</span></td>
+              <td><button type="button" class="cancel-btn" data-id="${b.id || ""}" ${cancelDisabled ? "disabled" : ""} title="${cancelTitle}"><i class="fas fa-xmark"></i> Cancel</button></td>
+            </tr>
+          `;
+        })
+        .join("");
 
-      document.querySelectorAll(".cancel-btn").forEach((btn) => {
+      bookingsList.innerHTML = `
+        <div class="bookings-table-wrap">
+          <table class="bookings-table">
+            <thead>
+              <tr>
+                <th>Booking ID</th>
+                <th>Stay</th>
+                <th>Room</th>
+                <th>Guests</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Nights</th>
+                <th>Total</th>
+                <th>Advance Paid</th>
+                <th>Balance Due</th>
+                <th>Payment</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>${rows}</tbody>
+          </table>
+        </div>
+      `;
+
+      bookingsList.querySelectorAll(".cancel-btn").forEach((btn) => {
         if (btn.disabled) return;
         btn.addEventListener("click", () => cancelBooking(btn.dataset.id));
       });
@@ -756,6 +838,7 @@
       const bookings = getUserBookings();
       refreshStats(bookings);
       renderBookings(bookings);
+      checkForNewConfirmations(bookings);
     }
 
     function setProfileEditMode(isEdit) {
@@ -864,7 +947,7 @@
         return;
       }
 
-      document.getElementById("welcomeText").textContent = `Welcome, ${currentUser.name}`;
+      document.getElementById("welcomeText").textContent = `Welcome, ${currentUser.name}    (Password is your Mobile Number.)`;
 
       const userGreeting = document.getElementById("userGreeting");
       const logoutLink = document.getElementById("logoutLink");
@@ -930,6 +1013,4 @@
 </script>
 </body>
 </html>
-
-
 

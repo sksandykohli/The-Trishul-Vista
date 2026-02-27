@@ -632,7 +632,7 @@
   <div id="bookingSuccessOverlay" class="booking-success-overlay" aria-hidden="true">
     <div class="booking-success-box">
       <h3><i class="fas fa-circle-check"></i> Thanks for Booking!</h3>
-      <p id="bookingSuccessText">Your booking is confirmed.</p>
+      <p id="bookingSuccessText">Your booking request is submitted.</p>
     </div>
   </div>
 
@@ -775,7 +775,8 @@
     function isBookingApproved(booking) {
       if (!booking) return false;
       if (!booking.approvalStatus) return true;
-      return String(booking.approvalStatus).toLowerCase() === "approved";
+      const status = String(booking.approvalStatus).toLowerCase();
+      return status === "approved" || status === "pending";
     }
 
     function findConflict(selectedRoom, inDate, outDate) {
@@ -990,7 +991,7 @@
       updateSummary();
       renderAvailabilityCalendar();
       closePaymentPopup();
-      bookingSuccessText.textContent = `Thanks for booking! Booking ID: ${booking.id}. Your booking is confirmed. Redirecting to home page...`;
+      bookingSuccessText.textContent = `Thanks for booking! Booking ID: ${booking.id}. Your booking request is submitted. Waiting for admin confirmation. Redirecting to home page...`;
       bookingSuccessOverlay.classList.add("show");
       bookingSuccessOverlay.setAttribute("aria-hidden", "false");
       setTimeout(() => {
@@ -1149,11 +1150,8 @@
       const advancePaid = Math.min(ADVANCE_PAYMENT, total);
       booking.advancePaid = advancePaid;
       booking.balanceDue = Math.max(total - advancePaid, 0);
-      booking.paymentStatus = "Advance Paid";
-      booking.paymentMethod = "QR";
-      booking.paymentAt = new Date().toISOString();
-      booking.approvalStatus = "Approved";
-      booking.approvedAt = new Date().toISOString();
+      booking.paymentStatus = "Pending";
+      booking.approvalStatus = "Pending";
 
       pendingBookingData = booking;
       openPaymentPopup(booking);

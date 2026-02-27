@@ -74,6 +74,14 @@
       font-weight: 800;
     }
 
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      align-items: end;
+      margin-top: 10px;
+    }
+
     .field {
       display: grid;
       gap: 6px;
@@ -173,43 +181,6 @@
       padding-right: 2px;
     }
 
-    .admin-table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 920px;
-    }
-
-    .admin-table th,
-    .admin-table td {
-      border: 1px solid #dfeaf4;
-      padding: 8px 10px;
-      text-align: left;
-      font-size: 0.84rem;
-      color: #334e68;
-    }
-
-    .admin-table thead th {
-      background: #f3f8fd;
-      color: #102a43;
-      font-weight: 800;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    .admin-table .muted {
-      color: #627d98;
-      font-weight: 700;
-      font-size: 0.78rem;
-    }
-
-    .table-wrap {
-      overflow: auto;
-      border: 1px solid #dfeaf4;
-      border-radius: 10px;
-      background: #fff;
-    }
-
     .item {
       border: 1px solid #dfeaf4;
       border-radius: 10px;
@@ -279,6 +250,104 @@
       gap: 8px;
       justify-content: flex-end;
       flex-wrap: wrap;
+    }
+
+    .admin-bookings-table-wrap {
+      border: 1px solid #dfeaf4;
+      border-radius: 10px;
+      overflow: auto;
+      background: #fbfdff;
+    }
+
+    .admin-bookings-table {
+      width: 100%;
+      min-width: 1220px;
+      border-collapse: collapse;
+      color: #334e68;
+      font-size: 0.84rem;
+    }
+
+    .admin-bookings-table th,
+    .admin-bookings-table td {
+      border-bottom: 1px solid #e6eff7;
+      padding: 9px 8px;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .admin-bookings-table th {
+      background: #f2f8ff;
+      color: #0f2f52;
+      font-weight: 800;
+      font-size: 0.79rem;
+    }
+
+    .admin-bookings-table .admin-address-cell {
+      white-space: normal;
+      min-width: 220px;
+    }
+
+    .admin-bookings-table .admin-actions-cell {
+      white-space: nowrap;
+    }
+
+    .admin-bookings-table .admin-actions-cell .btn + .btn {
+      margin-left: 6px;
+    }
+
+    .details-popup {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.58);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 7050;
+    }
+
+    .details-popup.show {
+      display: flex;
+    }
+
+    .details-box {
+      width: min(760px, 96vw);
+      max-height: 86vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px solid #dce8f3;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.28);
+      padding: 16px;
+    }
+
+    .details-box h4 {
+      margin: 0 0 10px;
+      color: #102a43;
+      font-size: 1.08rem;
+    }
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 12px;
+      color: #334e68;
+      font-size: 0.88rem;
+    }
+
+    .details-grid p {
+      margin: 0;
+    }
+
+    .details-grid .full {
+      grid-column: 1 / -1;
+    }
+
+    .details-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
     }
 
     .btn {
@@ -556,7 +625,7 @@
         </div>
       </div>
 
-      <div class="hamburger" onclick="toggleMenu()">
+      <div class="hamburger" id="hamburgerBtn" onclick="toggleMenu()">
         <i class="fas fa-bars"></i>
       </div>
       <nav id="mainNav">
@@ -569,7 +638,7 @@
           <li><a href="contact.html">Contact Us</a></li>
           <li><a href="auth.html" id="loginLink">Login</a></li>
           <li id="userGreeting"></li>
-          <li><a href="#" id="logoutLink" onclick="logout()">Logout</a></li>
+          <li><a href="#" id="logoutLink" onclick="logout(); return false;">Logout</a></li>
         </ul>
       </nav>
     </div>
@@ -587,11 +656,11 @@
           <label for="adminPassword">Admin Password</label>
           <input id="adminPassword" type="password" placeholder="Enter password" />
         </div>
-        <button class="dash-btn primary" style="width:100%;margin-top:10px;" type="button" onclick="adminLogin()">Login as Admin</button>
+        <button class="dash-btn primary" id="adminLoginBtn" style="width:100%;margin-top:10px;" type="button" onclick="adminLogin()">Login as Admin</button>
         <p id="adminLoginMsg" class="admin-msg"></p>
 
         <div class="admin-reset-wrap">
-          <button type="button" class="admin-reset-toggle" onclick="toggleResetPasswordForm()">
+          <button type="button" class="admin-reset-toggle" id="adminResetToggleBtn" onclick="toggleResetPasswordForm()">
             <i class="fas fa-key"></i> Reset Admin Password
           </button>
           <form id="adminResetForm" class="admin-reset-form" novalidate>
@@ -619,8 +688,8 @@
         <h2 class="admin-title">Admin Dashboard</h2>
         <p class="admin-sub">Manage bookings and registered users from one place.</p>
         <div class="admin-actions-top">
-          <button class="btn warn" type="button" onclick="exportBookings()"><i class="fas fa-file-export"></i> Export Bookings (Excel)</button>
-          <button class="btn danger" type="button" onclick="adminLogout()"><i class="fas fa-right-from-bracket"></i> Admin Logout</button>
+          <button class="btn warn" id="exportBookingsBtn" type="button" onclick="exportBookings()"><i class="fas fa-file-export"></i> Export Bookings (Excel)</button>
+          <button class="btn danger" id="adminLogoutBtn" type="button" onclick="adminLogout()"><i class="fas fa-right-from-bracket"></i> Admin Logout</button>
         </div>
       </article>
 
@@ -632,6 +701,12 @@
       </section>
 
       <article class="admin-card">
+        <div class="toolbar">
+          <div class="field">
+            <label for="searchInput">Search (name/email/booking ID)</label>
+            <input id="searchInput" type="text" placeholder="Type to filter..." />
+          </div>
+        </div>
         <p id="adminMsg" class="admin-msg"></p>
       </article>
 
@@ -641,7 +716,12 @@
           <button class="panel-tab" type="button" data-panel="usersPanelWrap">Registered Users</button>
         </div>
         <section id="bookingsPanelWrap">
-          <h3 class="panel-title">Today + Next Day Bookings</h3>
+          <h3 class="panel-title">Bookings</h3>
+          <div class="booking-filter-switch">
+            <button class="booking-filter-tab active" type="button" data-booking-filter="today">Today Booking</button>
+            <button class="booking-filter-tab" type="button" data-booking-filter="next">Next Day Booking <span id="nextBookingNotify" class="tab-notify" style="display:none;">0</span></button>
+            <button class="booking-filter-tab" type="button" data-booking-filter="past">Past Booking</button>
+          </div>
           <div id="bookingsPanel" class="list"></div>
         </section>
         <section id="usersPanelWrap" style="display:none;">
@@ -658,8 +738,19 @@
       <h4>Confirm Action</h4>
       <p id="confirmPopupText">Are you sure?</p>
       <div class="confirm-actions">
-        <button type="button" class="confirm-btn cancel" onclick="closeConfirmPopup()">Cancel</button>
-        <button type="button" class="confirm-btn ok" onclick="proceedConfirmAction()">Yes, Continue</button>
+        <button type="button" class="confirm-btn cancel" id="confirmPopupCancelBtn" onclick="closeConfirmPopup()">Cancel</button>
+        <button type="button" class="confirm-btn ok" id="confirmPopupOkBtn" onclick="proceedConfirmAction()">Yes, Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bookingDetailsPopup" class="details-popup" aria-hidden="true">
+    <div class="details-box">
+      <h4>Booking Details</h4>
+      <div id="bookingDetailsContent" class="details-grid"></div>
+      <div class="details-actions">
+        <button type="button" class="confirm-btn ok" id="printBookingDetailsBtn">Print</button>
+        <button type="button" class="confirm-btn cancel" id="closeBookingDetailsBtn">Close</button>
       </div>
     </div>
   </div>
@@ -672,7 +763,6 @@
     const ADMIN_EMAIL = "admin@trishulvista.com";
     const ADMIN_PASSWORD_DEFAULT = "Admin@123";
     const ADMIN_PASSWORD_KEY = "trishulAdminPassword";
-    const ADMIN_SESSION_KEY = "trishulAdminLoggedIn";
 
     const adminLoginView = document.getElementById("adminLoginView");
     const adminDashboardView = document.getElementById("adminDashboardView");
@@ -684,14 +774,28 @@
     const usersPanel = document.getElementById("usersPanel");
     const searchInput = document.getElementById("searchInput");
     const panelTabs = document.querySelectorAll(".panel-tab");
+    const bookingFilterTabs = document.querySelectorAll(".booking-filter-tab");
     const bookingsPanelWrap = document.getElementById("bookingsPanelWrap");
     const usersPanelWrap = document.getElementById("usersPanelWrap");
     const nextBookingNotify = document.getElementById("nextBookingNotify");
     const confirmPopup = document.getElementById("confirmPopup");
     const confirmPopupText = document.getElementById("confirmPopupText");
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
+    const logoutLink = document.getElementById("logoutLink");
+    const adminLoginBtn = document.getElementById("adminLoginBtn");
+    const adminResetToggleBtn = document.getElementById("adminResetToggleBtn");
+    const exportBookingsBtn = document.getElementById("exportBookingsBtn");
+    const adminLogoutBtn = document.getElementById("adminLogoutBtn");
+    const confirmPopupCancelBtn = document.getElementById("confirmPopupCancelBtn");
+    const confirmPopupOkBtn = document.getElementById("confirmPopupOkBtn");
+    const bookingDetailsPopup = document.getElementById("bookingDetailsPopup");
+    const bookingDetailsContent = document.getElementById("bookingDetailsContent");
+    const printBookingDetailsBtn = document.getElementById("printBookingDetailsBtn");
+    const closeBookingDetailsBtn = document.getElementById("closeBookingDetailsBtn");
     const NEXT_BOOKING_NOTIFY_SEEN_KEY = "trishulAdminNextBookingNotifySeenAt";
-    let currentBookingFilter = "today-next";
+    let currentBookingFilter = "today";
     let confirmAction = null;
+    let currentBookingForPrint = null;
 
     function getAdminPassword() {
       const fromStorage = localStorage.getItem(ADMIN_PASSWORD_KEY);
@@ -738,6 +842,99 @@
       closeConfirmPopup();
     }
 
+    function closeBookingDetailsPopup() {
+      bookingDetailsPopup.classList.remove("show");
+      bookingDetailsPopup.setAttribute("aria-hidden", "true");
+      bookingDetailsContent.innerHTML = "";
+      currentBookingForPrint = null;
+    }
+
+    function openBookingDetails(id) {
+      const booking = getBookings().find((b) => b.id === id);
+      if (!booking) return;
+      currentBookingForPrint = booking;
+      const bookingApproved = String(booking.approvalStatus || "Pending").toLowerCase() === "approved" ? "Approved" : "Pending";
+      const paymentApproved = isPaymentApproved(booking) ? "Approved" : (booking.paymentStatus || "Pending");
+      const totalAmount = Number(booking.total || 0);
+      const advancePaid = Number(booking.advancePaid || Math.min(500, totalAmount));
+      const balanceDue = Number(booking.balanceDue != null ? booking.balanceDue : Math.max(totalAmount - advancePaid, 0));
+
+      bookingDetailsContent.innerHTML = `
+        <p><strong>Booking No:</strong> ${booking.bookingNo || "-"}</p>
+        <p><strong>Booking ID:</strong> ${booking.id || "-"}</p>
+        <p><strong>Name:</strong> ${booking.guestName || "-"}</p>
+        <p><strong>Email:</strong> ${booking.email || "-"}</p>
+        <p><strong>Phone:</strong> ${booking.phone || "-"}</p>
+        <p><strong>Room:</strong> ${booking.roomType || "-"}</p>
+        <p><strong>Guests:</strong> ${booking.guests || "-"}</p>
+        <p><strong>Check-in:</strong> ${booking.checkIn || "-"}</p>
+        <p><strong>Check-out:</strong> ${booking.checkOut || "-"}</p>
+        <p><strong>Nights:</strong> ${booking.nights || "-"}</p>
+        <p><strong>Total:</strong> INR ${totalAmount.toLocaleString("en-IN")}</p>
+        <p><strong>Advance Paid:</strong> INR ${advancePaid.toLocaleString("en-IN")}</p>
+        <p><strong>Balance Due:</strong> INR ${balanceDue.toLocaleString("en-IN")}</p>
+        <p><strong>Booking Status:</strong> ${bookingApproved}</p>
+        <p><strong>Payment Status:</strong> ${paymentApproved}</p>
+        <p class="full"><strong>Address:</strong> ${booking.address || "-"}</p>
+        <p class="full"><strong>Special Request:</strong> ${booking.specialRequest || "-"}</p>
+      `;
+      bookingDetailsPopup.classList.add("show");
+      bookingDetailsPopup.setAttribute("aria-hidden", "false");
+    }
+
+    function printBookingDetails() {
+      if (!currentBookingForPrint) return;
+      const booking = currentBookingForPrint;
+      const totalAmount = Number(booking.total || 0);
+      const advancePaid = Number(booking.advancePaid || Math.min(500, totalAmount));
+      const balanceDue = Number(booking.balanceDue != null ? booking.balanceDue : Math.max(totalAmount - advancePaid, 0));
+      const paymentStatus = isPaymentApproved(booking) ? "Approved" : (booking.paymentStatus || "Pending");
+      const bookingStatus = String(booking.approvalStatus || "Pending").toLowerCase() === "approved" ? "Approved" : "Pending";
+
+      const printWindow = window.open("", "_blank", "width=900,height=700");
+      if (!printWindow) return;
+      const printableHtml = [
+        "<html>",
+        "<head>",
+        "<title>Booking Details - " + (booking.id || "-") + "</title>",
+        "<style>",
+        "body { font-family: Arial, sans-serif; margin: 20px; color: #1f2937; }",
+        "h2 { margin: 0 0 14px; }",
+        "table { width: 100%; border-collapse: collapse; font-size: 14px; }",
+        "td { border: 1px solid #d1d5db; padding: 8px 10px; vertical-align: top; }",
+        "td.label { width: 32%; font-weight: 700; background: #f9fafb; }",
+        "</style>",
+        "</head>",
+        "<body>",
+        "<h2>The Trishul Vista - Booking Details</h2>",
+        "<table>",
+        "<tr><td class=\"label\">Booking No</td><td>" + (booking.bookingNo || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Booking ID</td><td>" + (booking.id || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Guest Name</td><td>" + (booking.guestName || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Email</td><td>" + (booking.email || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Phone</td><td>" + (booking.phone || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Room</td><td>" + (booking.roomType || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Guests</td><td>" + (booking.guests || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Check-in</td><td>" + (booking.checkIn || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Check-out</td><td>" + (booking.checkOut || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Nights</td><td>" + (booking.nights || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Total Amount</td><td>INR " + totalAmount.toLocaleString("en-IN") + "</td></tr>",
+        "<tr><td class=\"label\">Advance Paid</td><td>INR " + advancePaid.toLocaleString("en-IN") + "</td></tr>",
+        "<tr><td class=\"label\">Balance Due</td><td>INR " + balanceDue.toLocaleString("en-IN") + "</td></tr>",
+        "<tr><td class=\"label\">Booking Status</td><td>" + bookingStatus + "</td></tr>",
+        "<tr><td class=\"label\">Payment Status</td><td>" + paymentStatus + "</td></tr>",
+        "<tr><td class=\"label\">Address</td><td>" + (booking.address || "-") + "</td></tr>",
+        "<tr><td class=\"label\">Special Request</td><td>" + (booking.specialRequest || "-") + "</td></tr>",
+        "</table>",
+        "</body>",
+        "</html>"
+      ].join("");
+      printWindow.document.write(printableHtml);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
+
     window.closeConfirmPopup = closeConfirmPopup;
     window.proceedConfirmAction = proceedConfirmAction;
 
@@ -752,7 +949,10 @@
     function refreshStats() {
       const bookings = getBookings();
       const users = getUsers();
-      const paid = bookings.filter((b) => (b.paymentStatus || "").toLowerCase() === "paid").length;
+      const paid = bookings.filter((b) => {
+        const status = String(b.paymentStatus || "").toLowerCase();
+        return status === "paid" || status === "approved";
+      }).length;
       const revenue = bookings.reduce((sum, b) => sum + Number(b.total || 0), 0);
 
       document.getElementById("sBookings").textContent = String(bookings.length);
@@ -769,6 +969,11 @@
       const dt = new Date(year, month - 1, day);
       dt.setHours(0, 0, 0, 0);
       return Number.isNaN(dt.getTime()) ? null : dt;
+    }
+
+    function isPaymentApproved(booking) {
+      const status = String((booking && booking.paymentStatus) || "").toLowerCase();
+      return status === "paid" || status === "approved";
     }
 
     function updateNextBookingNotification() {
@@ -793,17 +998,19 @@
     function renderBookings() {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      const tomorrow = new Date(today);
-      tomorrow.setDate(today.getDate() + 1);
 
-      const q = (searchInput?.value || "").trim().toLowerCase();
+      const q = (searchInput.value || "").trim().toLowerCase();
       const bookings = getBookings().filter((b) => {
         const checkInDate = parseLocalDate(b.checkIn);
         const checkOutDate = parseLocalDate(b.checkOut);
         let bookingFilterMatch = true;
 
-        if (currentBookingFilter === "today-next") {
-          bookingFilterMatch = !!checkInDate && (checkInDate.getTime() === today.getTime() || checkInDate.getTime() === tomorrow.getTime());
+        if (currentBookingFilter === "past") {
+          bookingFilterMatch = !!checkOutDate && checkOutDate <= today;
+        } else if (currentBookingFilter === "today") {
+          bookingFilterMatch = !!checkInDate && !!checkOutDate && checkInDate <= today && checkOutDate > today;
+        } else if (currentBookingFilter === "next") {
+          bookingFilterMatch = !!checkInDate && checkInDate > today;
         }
 
         const searchMatch =
@@ -816,7 +1023,13 @@
 
       bookingsPanel.innerHTML = "";
       if (!bookings.length) {
-        bookingsPanel.innerHTML = `<div class="empty">No bookings found for today or next day.</div>`;
+        const title =
+          currentBookingFilter === "past"
+            ? "No past bookings found."
+            : currentBookingFilter === "next"
+            ? "No next day bookings found."
+            : "No today bookings found.";
+        bookingsPanel.innerHTML = `<div class="empty">${title}</div>`;
         return;
       }
 
@@ -828,57 +1041,47 @@
         const timeB = Number(b.createdAt || String(b.id || "").replace("TV-", "") || 0);
         return timeA - timeB;
       });
-      const rowsHtml = sorted
-        .map((b) => {
-          const isApproved = String(b.approvalStatus || "Pending").toLowerCase() === "approved";
-          const paid = isApproved && (b.paymentStatus || "").toLowerCase() === "paid";
-          const statusText = paid ? "Paid" : "Pending";
-          const approvalText = isApproved ? "Confirmed" : "Pending";
-          const bookingNumber = Number(b.bookingNo || 0) || "-";
-          return `
-            <tr>
-              <td>${bookingNumber}<div class="muted">${b.id || "-"}</div></td>
-              <td>${b.guestName || "-"}</td>
-              <td>${b.email || "-"}</td>
-              <td>${b.phone || "-"}</td>
-              <td>${b.roomType || "-"}</td>
-              <td>${b.checkIn || "-"}</td>
-              <td>${b.checkOut || "-"}</td>
-              <td>INR ${Number(b.total || 0).toLocaleString("en-IN")}</td>
-              <td><span class="badge ${paid ? "paid" : "pending"}">${statusText}</span></td>
-              <td>
-                <span class="badge ${isApproved ? "approved" : "awaiting"}">${approvalText}</span>
-                ${!isApproved ? `<div style="margin-top:6px;"><button class="btn approve" type="button" data-action="approve-booking" data-id="${b.id || ""}">Confirm</button></div>` : ""}
-              </td>
-              <td>
-                <button class="btn danger" type="button" data-action="delete-booking" data-id="${b.id || ""}">Delete</button>
-              </td>
-            </tr>
-          `;
-        })
-        .join("");
+      const rows = sorted.map((b) => {
+        const paymentApproved = isPaymentApproved(b);
+        const isApproved = String(b.approvalStatus || "Approved").toLowerCase() === "approved";
+        const bookingNumber = Number(b.bookingNo || 0) || "-";
+        const actionHtml =
+          currentBookingFilter === "past"
+            ? `<span style="color:#627d98;font-size:0.8rem;font-weight:700;">Disabled</span>`
+            : `${!isApproved ? `<button class="btn approve" type="button" data-action="approve-booking" data-id="${b.id || ""}">Approve Booking</button>` : ""}
+               ${!paymentApproved ? `<button class="btn approve" type="button" data-action="approve-payment" data-id="${b.id || ""}">Approve Payment</button>` : ""}
+               <button class="btn danger" type="button" data-action="delete-booking" data-id="${b.id || ""}">Delete</button>
+               <button class="btn edit" type="button" data-action="view-details" data-id="${b.id || ""}">Details</button>`;
+        return `
+          <tr>
+            <td>${bookingNumber}</td>
+            <td>${b.id || "-"}</td>
+            <td>${b.guestName || "-"}</td>
+            <td>${b.roomType || "-"}</td>
+            <td>${b.checkIn || "-"}</td>
+            <td>${b.checkOut || "-"}</td>
+            <td>INR ${Number(b.total || 0).toLocaleString("en-IN")}</td>
+            <td class="admin-actions-cell">${actionHtml}</td>
+          </tr>
+        `;
+      }).join("");
 
       bookingsPanel.innerHTML = `
-        <div class="table-wrap">
-          <table class="admin-table">
+        <div class="admin-bookings-table-wrap">
+          <table class="admin-bookings-table">
             <thead>
               <tr>
-                <th>Booking</th>
+                <th>No</th>
+                <th>Booking ID</th>
                 <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
                 <th>Room</th>
                 <th>Check-in</th>
                 <th>Check-out</th>
                 <th>Total</th>
-                <th>Payment</th>
-                <th>Approval</th>
-                <th>Action</th>
+                <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
-              ${rowsHtml}
-            </tbody>
+            <tbody>${rows}</tbody>
           </table>
         </div>
       `;
@@ -889,7 +1092,9 @@
           const id = btn.dataset.id;
           if (!id) return;
           if (action === "approve-booking") approveBooking(id);
+          if (action === "approve-payment") approvePayment(id);
           if (action === "delete-booking") deleteBooking(id);
+          if (action === "view-details") openBookingDetails(id);
         });
       });
     }
@@ -901,17 +1106,28 @@
         if (index === -1) return;
         all[index].approvalStatus = "Approved";
         all[index].approvedAt = new Date().toISOString();
-        all[index].paymentStatus = "Paid";
+        localStorage.setItem("trishulBookings", JSON.stringify(all));
+        showMsg(adminMsg, "success", "Booking approved successfully.");
+        refreshAdminData();
+      });
+    }
+
+    function approvePayment(id) {
+      openConfirmPopup("Approve this booking payment?", () => {
+        const all = getBookings();
+        const index = all.findIndex((b) => b.id === id);
+        if (index === -1) return;
+        all[index].paymentStatus = "Approved";
         all[index].paymentAt = new Date().toISOString();
         if (!all[index].paymentMethod) all[index].paymentMethod = "QR";
         localStorage.setItem("trishulBookings", JSON.stringify(all));
-        showMsg(adminMsg, "success", "Booking approved and marked as Paid.");
+        showMsg(adminMsg, "success", "Payment approved successfully.");
         refreshAdminData();
       });
     }
 
     function renderUsers() {
-      const q = (searchInput?.value || "").trim().toLowerCase();
+      const q = (searchInput.value || "").trim().toLowerCase();
       const users = getUsers().filter((u) => {
         if (!q) return true;
         return String(u.name || "").toLowerCase().includes(q) || String(u.email || "").toLowerCase().includes(q);
@@ -996,7 +1212,7 @@
       ];
 
       const escapeCsv = (value) => {
-        const text = String(value ?? "");
+        const text = String(value == null ? "" : value);
         return `"${text.replace(/"/g, '""')}"`;
       };
 
@@ -1059,24 +1275,50 @@
         showMsg(adminLoginMsg, "error", "Invalid admin credentials.");
         return;
       }
-      localStorage.setItem(ADMIN_SESSION_KEY, "true");
       adminLoginView.style.display = "none";
       adminDashboardView.style.display = "grid";
       refreshAdminData();
     }
 
     function adminLogout() {
-      localStorage.removeItem(ADMIN_SESSION_KEY);
       window.location.href = "index.html";
     }
 
-    if (searchInput) {
-      searchInput.addEventListener("input", refreshAdminData);
-      searchInput.addEventListener("change", refreshAdminData);
+    [searchInput].forEach((el) => {
+      el.addEventListener("input", refreshAdminData);
+      el.addEventListener("change", refreshAdminData);
+    });
+
+    if (adminLoginBtn) adminLoginBtn.addEventListener("click", adminLogin);
+    if (adminResetToggleBtn) adminResetToggleBtn.addEventListener("click", toggleResetPasswordForm);
+    if (exportBookingsBtn) exportBookingsBtn.addEventListener("click", exportBookings);
+    if (adminLogoutBtn) adminLogoutBtn.addEventListener("click", adminLogout);
+    if (confirmPopupCancelBtn) confirmPopupCancelBtn.addEventListener("click", closeConfirmPopup);
+    if (confirmPopupOkBtn) confirmPopupOkBtn.addEventListener("click", proceedConfirmAction);
+    if (hamburgerBtn) hamburgerBtn.addEventListener("click", toggleMenu);
+    if (logoutLink) {
+      logoutLink.addEventListener("click", (event) => {
+        event.preventDefault();
+        logout();
+      });
     }
 
     panelTabs.forEach((tab) => {
       tab.addEventListener("click", () => switchPanel(tab.dataset.panel));
+    });
+
+    bookingFilterTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        currentBookingFilter = tab.dataset.bookingFilter || "today";
+        bookingFilterTabs.forEach((btn) => {
+          btn.classList.toggle("active", btn === tab);
+        });
+        if (currentBookingFilter === "next") {
+          localStorage.setItem(NEXT_BOOKING_NOTIFY_SEEN_KEY, String(Date.now()));
+        }
+        updateNextBookingNotification();
+        renderBookings();
+      });
     });
 
     function closeMobileMenu() {
@@ -1115,18 +1357,39 @@
     confirmPopup.addEventListener("click", (event) => {
       if (event.target.id === "confirmPopup") closeConfirmPopup();
     });
+    if (bookingDetailsPopup) {
+      bookingDetailsPopup.addEventListener("click", (event) => {
+        if (event.target.id === "bookingDetailsPopup") closeBookingDetailsPopup();
+      });
+    }
+    if (printBookingDetailsBtn) {
+      printBookingDetailsBtn.addEventListener("click", printBookingDetails);
+    }
+    if (closeBookingDetailsBtn) {
+      closeBookingDetailsBtn.addEventListener("click", closeBookingDetailsPopup);
+    }
 
     document.addEventListener("keydown", (event) => {
       if (event.key === "Escape" && confirmPopup.classList.contains("show")) {
         closeConfirmPopup();
       }
+      if (bookingDetailsPopup && event.key === "Escape" && bookingDetailsPopup.classList.contains("show")) {
+        closeBookingDetailsPopup();
+      }
     });
 
     function logout() {
-      localStorage.removeItem(ADMIN_SESSION_KEY);
       localStorage.removeItem("loggedInUser");
       window.location.href = "index.html";
     }
+
+    window.adminLogin = adminLogin;
+    window.adminLogout = adminLogout;
+    window.exportBookings = exportBookings;
+    window.toggleResetPasswordForm = toggleResetPasswordForm;
+    window.toggleMenu = toggleMenu;
+    window.logout = logout;
+
 document.addEventListener("DOMContentLoaded", () => {
       const userGreeting = document.getElementById("userGreeting");
       const logoutLink = document.getElementById("logoutLink");
@@ -1140,13 +1403,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       getAdminPassword();
-
-      const adminLoggedIn = localStorage.getItem(ADMIN_SESSION_KEY) === "true";
-      if (adminLoggedIn) {
-        adminLoginView.style.display = "none";
-        adminDashboardView.style.display = "grid";
-        refreshAdminData();
-      }
     });
 
     adminResetForm.addEventListener("submit", (event) => {
@@ -1181,3 +1437,5 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 </body>
 </html>
+
+
